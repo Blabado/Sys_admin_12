@@ -3,13 +3,13 @@ linux: #Группа хостов
     nginx: #Имя подгруппы хостов
       hosts: #Узлы группы
         vm_1: #Имя машины
-          ansible_host: 89.169.147.250 #Адрес машины ubuntu-1 proxy
+          ansible_host: 51.250.14.104 #Адрес машины ubuntu-1 proxy
         vm_2:
-          ansible_host: 89.169.152.49 #Адрес машины ubuntu-2 main
+          ansible_host: 46.21.246.118 #Адрес машины ubuntu-2 main
         vm_3:
-          ansible_host: 84.252.129.32 #Адрес машины ubuntu-3 proxy
+          ansible_host: 51.250.3.113 #Адрес машины ubuntu-3 proxy
   vars: #Переменные, доступные или используемые для всех подгрупп
     ansible_user: admin
-    ansible_ssh_private_key_file: ~/web/ssh_cloud/id_ed25519
+    ansible_ssh_private_key_file: ~/Sys_admin_12/ssh_cloud/id_ed25519
     ansible_become: true #Становиться ли другим пользователем после подключения
     #become_user: root

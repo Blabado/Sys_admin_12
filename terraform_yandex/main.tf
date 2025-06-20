@@ -37,6 +37,6 @@ resource "yandex_compute_instance" "virtual_machine" {
     ip_address = each.value["ip_address"] # Добавил так как мы наверное не хотим каждый раз менять ip
   }
   metadata = {
-    "ssh-keys" = file("~/web/ssh_cloud/id_ed25519.pub")
+    "ssh-keys" = file("~/Sys_admin_12/ssh_cloud/id_ed25519.pub")
   }
 } 

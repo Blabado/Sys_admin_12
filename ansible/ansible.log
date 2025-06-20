@@ -1,0 +1,35 @@
+
+PLAY [Установка стандартных пакетов] *******************************************
+
+PLAY [Установка и настройка nginx c кастомной страницей] ***********************
+
+TASK [Gathering Facts] *********************************************************
+ok: [vm_1]
+ok: [vm_2]
+ok: [vm_3]
+
+TASK [nginx_custom : Установка Nginx] ******************************************
+changed: [vm_1]
+changed: [vm_3]
+changed: [vm_2]
+
+TASK [nginx_custom : Подмена веб-страницы] *************************************
+skipping: [vm_2]
+changed: [vm_1]
+changed: [vm_3]
+
+TASK [nginx_custom : Настройка прокси] *****************************************
+skipping: [vm_1]
+skipping: [vm_3]
+changed: [vm_2]
+
+RUNNING HANDLER [nginx_custom : Nginx Reloader] ********************************
+changed: [vm_1]
+changed: [vm_2]
+changed: [vm_3]
+
+PLAY RECAP *********************************************************************
+vm_1                       : ok=4    changed=3    unreachable=0    failed=0    skipped=1    rescued=0    ignored=0   
+vm_2                       : ok=4    changed=3    unreachable=0    failed=0    skipped=1    rescued=0    ignored=0   
+vm_3                       : ok=4    changed=3    unreachable=0    failed=0    skipped=1    rescued=0    ignored=0   
+
