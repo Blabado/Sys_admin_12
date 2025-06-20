@@ -14,7 +14,7 @@ fi
 mkdir ./ssh_cloud 
 cd ssh_cloud
 ssh-keygen -t ed25519 -f ./id_ed25519
-sed 's/^\(ssh-ed25519 .*\) tim@timpc$/admin:\1 admin/' ./id_ed25519.pub > ./id_ed25519.pub.tmp
+sed 's/^\(ssh-ed25519 .*\) [^ ]*$/admin:\1 admin/' ./id_ed25519.pub > ./id_ed25519.pub.tmp
 mv ./id_ed25519.pub.tmp ./id_ed25519.pub
 cd ..
 cd terraform_yandex
