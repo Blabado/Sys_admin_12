@@ -3,11 +3,11 @@ linux: #Группа хостов
     nginx: #Имя подгруппы хостов
       hosts: #Узлы группы
         vm_1: #Имя машины
-          ansible_host: 51.250.86.215 #Адрес машины ubuntu-1 proxy
+          ansible_host: #Адрес машины ubuntu-1 proxy
         vm_2:
-          ansible_host: 51.250.68.108 #Адрес машины ubuntu-2 main
+          ansible_host: #Адрес машины ubuntu-2 main
         vm_3:
-          ansible_host: 89.169.156.93 #Адрес машины ubuntu-3 proxy
+          ansible_host: #Адрес машины ubuntu-3 proxy
   vars: #Переменные, доступные или используемые для всех подгрупп
     ansible_user: admin
     ansible_ssh_private_key_file: ~/Sys_admin_12/ssh_cloud/id_ed25519
