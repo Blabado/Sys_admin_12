@@ -1,16 +1,83 @@
 #!/bin/bash
-#Предполагается что на хост машине установлен ansible 
-#Предполагается что на хост машине установлен и подключен к yandex cloud - terraform
-echo "Ты привязал terraform к yandex_cloud?"
-sleep 3
-echo "Название директории terraform_yandex если что"
-sleep 1
-echo "Введи пожалуйста no/yes"
+echo "Check the readiness of the host before installation?"
+echo "Take n/Y"
 read answer
-if [[ $answer == "no" ]]; then
+if [[ -z $answer ]]; then
+    answer="y"
+fi
+if [[ $answer == "n" ]]; then
+    exit 0
+fi
+#------------------Check prog-----------------------------------------------
+programs=("unzip" "curl" "wget" "terraform" "ansible" "ssh")
+count=0
+for program in "${programs[@]}"
+do
+	if which "$program" > /dev/null; then 
+        ((count++))
+	else
+		echo "Please install $program"
+    fi
+done
+
+if [ $count -ne ${#programs[@]} ]; then
+    echo "Not all programs are installed."
+    exit 1
+else
+    echo "The necessary programs are installed"
+fi
+#-------------------Check yc------------------------------------------------
+echo "You need to install the yandex_cloud provider. Install and configur"
+echo "Take n/Y"
+read answer
+if [[ $answer == "n" ]]; then
+    exit 0
+fi
+curl -sSL https://storage.yandexcloud.net/yandexcloud-yc/install.sh | bash
+sudo cp ~/yandex-cloud/bin/* /usr/bin/
+rm -r ~/yandex-cloud  
+if [[ $(which "${programs[0]}" > /dev/null; echo $?) -ne 0 ]]; then
+    exit 0
+fi
+yc init
+cp ~/Sys_admin_12/terraformrc ~/.terraformrc
+echo "You need to log in to yandex_cloud, create a service account and insert its id"
+read Id_temp
+yc iam key create \
+  --service-account-id $Id_temp \
+  --folder-name default \
+  --output key.json 
+yc config profile create admin 
+yc config set service-account-key key.json
+echo "You need to log in to yandex_cloud and copy the cloud id"
+read Id_temp
+yc config set cloud-id $Id_temp
+echo "You need to log in to yandex_cloud and copy the cloud folder id"
+read Id_temp
+yc config set folder-id $Id_temp
+export YC_TOKEN=$(yc iam create-token)
+export YC_CLOUD_ID=$(yc config get cloud-id)
+export YC_FOLDER_ID=$(yc config get folder-id) 
+cd terraform_yandex 
+terraform init | tee -a ~/Sys_admin_12/Log.txt
+cd ~/Sys_admin_12
+Res=$(python3 back_prog/find_key_string.py Log.txt "Terraform has been successfully initialized!")
+echo "$Res"
+exit
+#---------------------Conf yc-------------------------------------------
+
+
+echo "Continue? n/y"
+read answer
+if [[ $answer == "n" ]]; then
     echo "Скрипт завершается."
     exit 0
 fi
+if [[ $answer == "n" ]]; then
+    echo "Скрипт завершается."
+    exit 0
+fi
+
 mkdir ./ssh_cloud 
 cd ssh_cloud
 ssh-keygen -t ed25519 -f ./id_ed25519
