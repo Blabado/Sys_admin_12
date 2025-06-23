@@ -1,0 +1,108 @@
+#!/bin/bash
+echo "Check the readiness of the host before installation?"
+echo "Take n/Y"
+read answer
+if [[ -z $answer ]]; then
+    answer="y"
+fi
+if [[ $answer == "n" ]]; then
+    exit 0
+fi
+#------------------Check prog-----------------------------------------------
+programs=("unzip" "curl" "terraform" "ansible" "ssh")
+count=0
+for program in "${programs[@]}"
+do
+	if which "$program" > /dev/null; then 
+        ((count++))
+	else
+		echo "Please install $program"
+    fi
+done
+
+if [ $count -ne ${#programs[@]} ]; then
+    echo "Not all programs are installed."
+    exit 1
+else
+    echo "The necessary programs are installed"
+fi
+#-------------------Check yc------------------------------------------------
+echo "You need to install the yandex_cloud provider. Install and configur"
+echo "Take n/Y"
+read answer
+if [[ $answer == "n" ]]; then
+    exit 0
+fi
+curl -sSL https://storage.yandexcloud.net/yandexcloud-yc/install.sh | bash
+sudo cp ~/yandex-cloud/bin/* /usr/bin/
+rm -r ~/yandex-cloud  
+if [[ $(which "${programs[0]}" > /dev/null; echo $?) -ne 0 ]]; then
+    exit 0
+fi
+yc init
+cp ~/Sys_admin_12/terraformrc ~/.terraformrc
+echo "You need to log in to yandex_cloud, create a service account and insert its id"
+read Id_temp
+yc iam key create \
+  --service-account-id $Id_temp \
+  --folder-name default \
+  --output key.json 
+yc config profile create admin 
+yc config set service-account-key key.json
+echo "You need to log in to yandex_cloud and copy the cloud id"
+read Id_temp
+yc config set cloud-id $Id_temp
+echo "You need to log in to yandex_cloud and copy the cloud folder id"
+read Id_temp
+yc config set folder-id $Id_temp
+export YC_TOKEN=$(yc iam create-token)
+export YC_CLOUD_ID=$(yc config get cloud-id)
+export YC_FOLDER_ID=$(yc config get folder-id) 
+cd terraform_yandex 
+terraform init | tee -a ~/Sys_admin_12/Log.txt
+cd ~/Sys_admin_12
+Res=$(python3 back_prog/find_key_string.py Log.txt "Terraform has been successfully initialized!")
+if [ Res != 1 ]; then
+     #exit
+#---------------------------Conf yc-------------------------------------------
+echo "Continue? n/y"
+echo "$Res"
+read answer
+if [[ $answer == "n" ]]; then
+    echo "Скрипт завершается."
+    exit 0
+fi
+mkdir ./ssh_cloud 
+cd ssh_cloud
+ssh-keygen -t ed25519 -f ./id_ed25519
+sed 's/^\(ssh-ed25519 .*\) [^ ]*$/admin:\1 admin/' ./id_ed25519.pub > ./id_ed25519.pub.tmp
+mv ./id_ed25519.pub.tmp ./id_ed25519.pub
+cd ..
+cd terraform_yandex
+terraform apply -auto-approve
+cd ..
+yc compute instance list | awk '{print $10}' | tail -n +4 | head -n -2 > external_ip.txt
+if [ ! -s "external_ip.txt" ]; then
+  echo "No VMs have been created"
+  exit
+fi
+python3 back_prog/insert_string.py external_ip.txt ansible/inventory.yaml "          ansible_host"
+python3 back_prog/delete_string.py
+cd ansible
+echo "Подождем пока виртуалки подумают пока подумай ты чем вообще занимаешься куда идешь"
+count=0
+while [ $Res == 1 ]
+do
+    ((count++))
+    sleep 20 # По ощущениям стоит подождать
+    ansible all -m ping -i inventory.yaml | tee -a Log.txt
+    Res=$(python3 ~/Sys_admin_12/back_prog/find_ping_pong.py  ~/Sys_admin_12/Log.txt "pong")
+    if [ $count == 5 ]; then
+        echo "Что то виртуалки недоступны"
+	exit
+    fi
+done
+ansible-playbook playbook.yaml -i inventory.yaml --tags="install_packages" | tee -a Log.txt
+ansible-playbook playbook.yaml -i inventory.yaml --tags="nginx_custom"  | tee -a Log.txt
+echo "enter this into your browser http://$vm_2:3000"
+echo "DONE"
