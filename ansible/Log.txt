@@ -1,0 +1,54 @@
+
+PLAY [Установка стандартных пакетов] *******************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [vm_2]
+ok: [vm_3]
+fatal: [vm_1]: UNREACHABLE! => {"changed": false, "msg": "Failed to connect to the host via ssh: Connection timed out during banner exchange\r\nConnection to 51.250.7.96 port 22 timed out", "unreachable": true}
+
+TASK [default_packages : Установка программ] ***********************************
+changed: [vm_3] => (item=['dnsutils', 'net-tools', 'rsync', 'mc', 'curl', 'wget'])
+changed: [vm_2] => (item=['dnsutils', 'net-tools', 'rsync', 'mc', 'curl', 'wget'])
+
+PLAY [Установка и настройка nginx c кастомной страницей] ***********************
+
+PLAY RECAP *********************************************************************
+vm_1                       : ok=0    changed=0    unreachable=1    failed=0    skipped=0    rescued=0    ignored=0   
+vm_2                       : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+vm_3                       : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+
+PLAY [Установка стандартных пакетов] *******************************************
+
+PLAY [Установка и настройка nginx c кастомной страницей] ***********************
+
+TASK [Gathering Facts] *********************************************************
+ok: [vm_3]
+ok: [vm_2]
+ok: [vm_1]
+
+TASK [nginx_custom : Установка Nginx] ******************************************
+changed: [vm_3]
+changed: [vm_2]
+changed: [vm_1]
+
+TASK [nginx_custom : Подмена веб-страницы] *************************************
+skipping: [vm_1]
+changed: [vm_3]
+changed: [vm_2]
+
+TASK [nginx_custom : Настройка прокси] *****************************************
+skipping: [vm_2]
+skipping: [vm_3]
+changed: [vm_1]
+
+RUNNING HANDLER [nginx_custom : Nginx Reloader] ********************************
+changed: [vm_1]
+changed: [vm_3]
+changed: [vm_2]
+
+PLAY RECAP *********************************************************************
+vm_1                       : ok=4    changed=3    unreachable=0    failed=0    skipped=1    rescued=0    ignored=0   
+vm_2                       : ok=4    changed=3    unreachable=0    failed=0    skipped=1    rescued=0    ignored=0   
+vm_3                       : ok=4    changed=3    unreachable=0    failed=0    skipped=1    rescued=0    ignored=0   
+

@@ -3,7 +3,8 @@ if [[ "$@" =~ "--debug" ]]; then
     rm Log.txt
     cp ansible/.DEBUG_inventory.yaml ansible/inventory.yaml
 else
-    set -e
+    echo "FUCKKKKKKKKKK"
+    #set -e
 fi
 
 #-------------------------------Function--------------------------------
@@ -223,8 +224,8 @@ export_yc_var
 init_terraform
 generate_ssh_key
 run_terraform
-extract_ips
-insert_ips_into_inventory
+extract_ip
+insert_ip_into_inventory
 wait_for_hosts
 run_ansible_playbooks
 take_feedback
