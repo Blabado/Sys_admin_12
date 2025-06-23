@@ -224,8 +224,8 @@ export_yc_var
 init_terraform
 generate_ssh_key
 run_terraform
-extract_ips
-insert_ips_into_inventory
+extract_ip
+insert_ip_into_inventory
 wait_for_hosts
 run_ansible_playbooks
 take_feedback
