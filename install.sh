@@ -1,5 +1,10 @@
 #!/bin/bash
-#set -e
+if [[ "$@" =~ "--debug" ]]; then
+    rm Log.txt
+    cp ansible/.DEBUG_inventory.yaml ansible/inventory.yaml
+else
+    set -e
+fi
 
 #-------------------------------Function--------------------------------
 
@@ -52,6 +57,10 @@ configure_yc() {
     read folder_id
     yc config set folder-id "$folder_id"
 
+}
+
+export_yc_var() {
+    echo "Setting yandex_cloud variables"   
     export YC_TOKEN=$(yc iam create-token)
     export YC_CLOUD_ID="$cloud_id"
     export YC_FOLDER_ID="$folder_id"
@@ -70,7 +79,7 @@ init_terraform() {
     fi
 }
 
-generate_ssh_keys() {
+generate_ssh_key() {
     echo "Generating SSH keys..."
     mkdir -p ./ssh_cloud
     cd ssh_cloud
@@ -80,14 +89,14 @@ generate_ssh_keys() {
     cd ..
 }
 
-apply_terraform() {
+run_terraform() {
     echo "Applying Terraform configuration..."
     cd terraform_yandex
     terraform apply -auto-approve
     cd ..
 }
 
-extract_ips() {
+extract_ip() {
     echo "Extracting external IPs..."
     yc compute instance list | awk '{print $10}' | tail -n +4 | head -n -2 > external_ip.txt
 
@@ -97,7 +106,7 @@ extract_ips() {
     fi
 }
 
-insert_ips_into_inventory() {
+insert_ip_into_inventory() {
     echo "Inserting IPs into Ansible inventory..."
     python3 back_prog/insert_string.py external_ip.txt ansible/inventory.yaml "          ansible_host"
     python3 back_prog/delete_string.py
@@ -111,11 +120,11 @@ wait_for_hosts() {
 
     while [[ "$result" == "1" ]]; do
         ((count++))
-        sleep 20
-        ansible all -m ping -i inventory.yaml | tee -a Log.txt
+        sleep 10
+        ansible all -m ping -i inventory.yaml | tee -a ~/Sys_admin_12/Log.txt
         result=$(python3 ~/Sys_admin_12/back_prog/find_ping_pong.py ~/Sys_admin_12/Log.txt "pong")
 
-        if [[ "$count" -eq 5 ]]; then
+        if [[ "$count" -eq 10 ]]; then
             echo "VMs did not respond after 5 attempts"
             exit 1
         fi
@@ -131,7 +140,12 @@ run_ansible_playbooks() {
     cd ..
 
     echo "Setup complete!"
-    echo "Open in browser: http://<vm_2_ip>:3000"
+}
+
+take_feedback() {
+    vm_1=$(awk 'NR==1 {print}' external_ip.txt)
+    echo "Open in browser: http://$vm_1:3000"
+
 }
 
 #----------------------------General-----------------------------------------
@@ -139,25 +153,80 @@ echo "Check the readiness of the host before installation? [n/Y]"
 read answer
 answer=${answer:-y}
 
-if [[ "$answer" == "n" ]]; then
-    exit 0
+if [[ "$answer" == "y" ]]; then    
+    check_programs
 fi
-check_programs
 
-echo "Do you want to install and configure Yandex Cloud CLI? [n/Y]"
+echo "Do you want to install Yandex Cloud CLI? [n/Y]"
 read answer
 answer=${answer:-y}
 
-if [[ "$answer" == "n" ]]; then
-    exit 0
+if [[ "$answer" == "y" ]]; then
+    install_yc_cli
 fi
 
-install_yc_cli
+#---------------------------DEBUG-RUN------------------------------------------
+
+if [[ "$@" =~ "--debug" ]]; then
+    debug_skip() {
+        echo "DEBUG: Execute next step --- $1? [N/y]"
+        read answer
+        answer=${answer:-n}
+        [[ "$answer" == "y" ]]
+    }
+
+    if debug_skip "configure_yc"; then
+        configure_yc
+    fi
+
+    if debug_skip "export_yc_var"; then
+        export_yc_var
+    fi
+
+    if debug_skip "init_terraform"; then
+        init_terraform
+    fi
+
+    if debug_skip "generate_ssh_key"; then
+        generate_ssh_key
+    fi
+    
+    if debug_skip "run_terraform"; then
+        run_terraform
+    fi
+
+    if debug_skip "extract_ip"; then
+        extract_ip
+    fi
+
+    if debug_skip "insert_ip_into_inventory"; then
+        insert_ip_into_inventory
+    fi
+
+    if debug_skip "wait_for_hosts"; then
+        wait_for_hosts
+    fi
+
+    if debug_skip "run_ansible_playbooks"; then
+        run_ansible_playbooks
+    fi
+
+    if debug_skip "take_feedback"; then
+        take_feedback
+    fi
+    exit
+fi
+
+#----------------------------General cont----------------------------
 configure_yc
+export_yc_var
 init_terraform
-generate_ssh_keys
-apply_terraform
+generate_ssh_key
+run_terraform
 extract_ips
 insert_ips_into_inventory
 wait_for_hosts
 run_ansible_playbooks
+take_feedback
+
+
