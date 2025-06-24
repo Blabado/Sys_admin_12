@@ -134,8 +134,8 @@ wait_for_hosts() {
 run_ansible_playbooks() {
     echo "Running Ansible playbooks..."
     cd ansible
-    ansible-playbook playbook.yaml -i inventory.yaml --tags="install_packages" | tee -a Log.txt
-    ansible-playbook playbook.yaml -i inventory.yaml --tags="nginx_custom" | tee -a Log.txt
+    ansible-playbook playbook.yaml -i inventory.yaml --tags="install_packages" | tee -a ~/Sys_admin_12/Log.txt
+    ansible-playbook playbook.yaml -i inventory.yaml --tags="nginx_custom" | tee -a ~/Sys_admin_12/Log.txt
     cd ..
 
     echo "Setup complete!"
@@ -143,7 +143,7 @@ run_ansible_playbooks() {
 
 take_feedback() {
     vm_1=$(awk 'NR==1 {print}' external_ip.txt)
-    echo "Open in browser: http://$vm_1:3000"
+    echo "Open in browser: http://$vm_1:3000" | tee ~/Sys_admin_12/Result.txt
 
 }
 
