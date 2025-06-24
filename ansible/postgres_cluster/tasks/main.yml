@@ -1,0 +1,110 @@
+# tasks for postgresql_claster
+---
+- name: Установка PostgresSQL
+  apt:
+    name: "postgresql"
+    state: present
+
+- name: Установка repmgr
+  apt:
+    name: "repmgr"
+    state: present
+
+
+- name: Copy database configuration
+  template:
+    src: full_postgresql.conf.j2
+    dest: /etc/postgresql/16/main/postgresql.conf
+    group: postgres
+    mode: '0644'
+    owner: postgres
+
+- name: Copy user access configuration
+  template:
+    src: pg_hba.conf.j2
+    dest: /etc/postgresql/16/main/pg_hba.conf
+    group: postgres
+    mode: '0640'
+    owner: postgres
+
+- name: Setup repmgr user and database
+  become: true
+  become_user: postgres
+  ignore_errors: yes
+  shell: |
+    createuser --replication --createdb --createrole --superuser repmgr &&
+    psql -c 'ALTER USER repmgr SET search_path TO repmgr_test, "$user", public;' &&
+    createdb repmgr --owner=repmgr
+
+- name: Copy repmgr configuration in vm_1
+  template:
+    src: repmgr1.conf.j2
+    dest: /etc/repmgr.conf
+  when: "'vm_1' in inventory_hostname"
+
+- name: Copy repmgr configuration in vm_2
+  template:
+    src: repmgr2.conf.j2
+    dest: /etc/repmgr.conf
+  when: "'vm_2' in inventory_hostname"
+
+- name: Copy repmgr configuration in vm_3
+  template:
+    src: repmgr3.conf.j2
+    dest: /etc/repmgr.conf
+  when: "'vm_3' in inventory_hostname"
+
+- name: Restart PostgreSQL
+  systemd:
+    name: postgresql
+    enabled: yes
+    state: restarted
+
+- name: Register primary node
+  become_user: postgres
+  shell: repmgr primary register
+  ignore_errors: yes
+  when: "'vm_1' in inventory_hostname"
+ 
+- name: Stop PostgreSQL
+  systemd:
+    name: postgresql
+    state: stopped
+  when: "'vm_2' in inventory_hostname"
+ 
+- name: Clean up PostgreSQL data directory
+  become_user: postgres
+  file:
+    path: /var/lib/postgresql/16/main
+    force: yes
+    state: absent
+  when: "'vm_2' in inventory_hostname"
+ 
+- name: Clone primary node data
+  become_user: postgres
+  shell: repmgr -h {{ node1_ip }} -U repmgr -d repmgr standby clone
+  ignore_errors: yes
+  when: "'vm_2' in inventory_hostname"
+ 
+- name: Start PostgreSQL
+  systemd:
+    name: postgresql
+    state: started
+  when: "'vm_2' in inventory_hostname"
+ 
+- name: Register standby node
+  become_user: postgres
+  shell: repmgr -h {{ node1_ip }} standby register -F
+  ignore_errors: yes
+  when: "'vm_2' in inventory_hostname"
+
+- name: Register witness mode
+  become_user: postgres
+  shell: repmgr -h {{ node1_ip }} withness register -F
+  ignore_errors: yes
+  when: "'vm_3' in inventory_hostname"
+
+- name: Start repmgrd
+  become_user: postgres
+  shell: repmgrd
+  ignore_errors: yes

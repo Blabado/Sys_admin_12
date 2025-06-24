@@ -1,0 +1,7 @@
+#SPDX-License-Identifier: MIT-0
+---
+node1_ip: "192.168.10.10"
+node2_ip: "192.168.10.20"
+node3_ip: "192.168.10.30"
+client_ip: "51.250.23.252"
+# vars file for postgres-cluster

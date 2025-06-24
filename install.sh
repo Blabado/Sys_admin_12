@@ -2,7 +2,7 @@
 if [[ "$@" =~ "--debug" ]]; then
     rm Log.txt
     cp ansible/.DEBUG_inventory.yaml ansible/inventory.yaml
-    set -x 
+    #set -x 
 fi
 
 #-------------------------------Function--------------------------------
@@ -119,11 +119,11 @@ wait_for_hosts() {
 
     while [[ "$result" == "1" ]]; do
         ((count++))
-        sleep 30
+        sleep 60
         ansible all -m ping -i inventory.yaml | tee -a ~/Sys_admin_12/Log.txt
         result=$(python3 ~/Sys_admin_12/back_prog/find_ping_pong.py ~/Sys_admin_12/Log.txt "pong")
 
-        if [[ "$count" -eq 10 ]]; then
+        if [[ "$count" -eq 5 ]]; then
             echo "VMs did not respond after 5 attempts"
             exit 1
         fi
