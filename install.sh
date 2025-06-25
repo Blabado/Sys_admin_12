@@ -96,13 +96,58 @@ run_terraform() {
 }
 
 extract_ip() {
-    echo "Extracting external IPs..."
-    yc compute instance list | awk '{print $10}' | tail -n +4 | head -n -2 > external_ip.txt
 
-    if [ ! -s external_ip.txt ]; then
-        echo "No VMs have been created"
-        exit 1
+yc compute instance list > external_ip.txt.tmp
+cat external_ip.txt.tmp
+
+#Extract IP BD_PRIMARY
+count=0
+
+while true; do
+    name_ip=$(awk '{print $4}' external_ip.txt.tmp | tail -n +$((count)) | head -n 1)
+    #echo "$name_ip"
+    if [[ $name_ip == "bd_primary" ]]; then
+        echo "[Successful extraction of the bd_primary ip address]"
+        awk '{print $10}' external_ip.txt.tmp | tail -n +$((count)) | head -n 1 > external_ip.txt
+        break
     fi
+    ((count++))
+done
+
+#Extract IP BD_STANDBY
+count=0
+
+while true; do
+    name_ip=$(awk '{print $4}' external_ip.txt.tmp | tail -n +$((count)) | head -n 1)
+    #echo "$name_ip"
+    if [[ $name_ip == "bd_standby" ]]; then
+        echo "[Successful extraction of the bd_standby ip address]"
+        awk '{print $10}' external_ip.txt.tmp | tail -n +$((count)) | head -n 1 >> external_ip.txt
+        break
+    fi
+    
+    ((count++))
+done
+
+#Extract IP BD_WITHNESS
+
+count=0
+
+while true; do
+    name_ip=$(awk '{print $4}' external_ip.txt.tmp | tail -n +$((count)) | head -n 1)
+    #echo "$name_ip"
+    if [[ $name_ip == "bd_witness" ]]; then
+        echo "[Successful extraction of the db_witness ip address]"
+        awk '{print $10}' external_ip.txt.tmp | tail -n +$((count)) | head -n 1 >> external_ip.txt
+        break
+    fi
+    
+    ((count++))
+done
+
+
+
+rm external_ip.txt.tmp
 }
 
 insert_ip_into_inventory() {
