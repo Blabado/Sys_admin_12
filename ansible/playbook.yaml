@@ -6,12 +6,12 @@
 #  tags:
 #    - install_packages
 
-- name: Установка и настройка nginx c кастомной страницей
-  hosts: nginx # Будет работать на узлах в группе nginx
-  roles:
-    - role: nginx_custom
-  tags:
-    - nginx_custom 
+#- name: Установка и настройка nginx c кастомной страницей
+#  hosts: nginx # Будет работать на узлах в группе nginx
+#  roles:
+#    - role: nginx_custom
+#  tags:
+#    - nginx_custom 
 
 
 - name: Установка postgresql, repmgr и запуск кластера

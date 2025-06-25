@@ -2,9 +2,9 @@ linux: #Группа хостов
   children: #Обозначение, что будет подгруппа хостов
     nginx: #Имя подгруппы хостов
       hosts: #Узлы группы
-        vm_1:
+        bd_primary:
           ansible_host:
-        vm_2:
+        bd_standby:
           ansible_host:
         vm_3:
           ansible_host:

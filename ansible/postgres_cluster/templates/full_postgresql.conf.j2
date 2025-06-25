@@ -9,10 +9,9 @@ shared_buffers = 128MB
 dynamic_shared_memory_type = posix          	
 # repmgr
 listen_addresses = '*'
-shared_preload_libraries = 'repmgr'
 wal_level = replica
-max_wal_senders = 5
-#wal_keep_segments = 64 с ним почему то порт не слушается
-max_replication_slots = 5
+max_wal_senders = 10
+max_replication_slots = 10
 hot_standby = on
-wal_log_hints = on
+#archive_mode = on
+#archive_command = '/bin/true'

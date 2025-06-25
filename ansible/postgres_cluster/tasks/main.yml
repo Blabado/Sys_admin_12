@@ -38,21 +38,16 @@
 
 - name: Copy repmgr configuration in vm_1
   template:
-    src: repmgr1.conf.j2
+    src: repmgr_primary.conf.j2
     dest: /etc/repmgr.conf
-  when: "'vm_1' in inventory_hostname"
+  when: "'bd_primary' in inventory_hostname"
 
 - name: Copy repmgr configuration in vm_2
   template:
-    src: repmgr2.conf.j2
+    src: repmgr_standby.conf.j2
     dest: /etc/repmgr.conf
-  when: "'vm_2' in inventory_hostname"
+  when: "'bd_standby' in inventory_hostname"
 
-- name: Copy repmgr configuration in vm_3
-  template:
-    src: repmgr3.conf.j2
-    dest: /etc/repmgr.conf
-  when: "'vm_3' in inventory_hostname"
 
 - name: Restart PostgreSQL
   systemd:
@@ -64,13 +59,13 @@
   become_user: postgres
   shell: repmgr primary register
   ignore_errors: yes
-  when: "'vm_1' in inventory_hostname"
+  when: "'bd_primary' in inventory_hostname"
  
 - name: Stop PostgreSQL
   systemd:
     name: postgresql
     state: stopped
-  when: "'vm_2' in inventory_hostname"
+  when: "'bd_standby' in inventory_hostname"
  
 - name: Clean up PostgreSQL data directory
   become_user: postgres
@@ -78,33 +73,27 @@
     path: /var/lib/postgresql/16/main
     force: yes
     state: absent
-  when: "'vm_2' in inventory_hostname"
+  when: "'bd_standby' in inventory_hostname"
  
 - name: Clone primary node data
   become_user: postgres
-  shell: repmgr -h {{ node1_ip }} -U repmgr -d repmgr standby clone
+  shell: repmgr -h 192.168.10.10 -U repmgr -d repmgr -f /etc/repmgr.conf standby clone
   ignore_errors: yes
-  when: "'vm_2' in inventory_hostname"
+  when: "'bd_standby' in inventory_hostname"
  
 - name: Start PostgreSQL
   systemd:
     name: postgresql
     state: started
-  when: "'vm_2' in inventory_hostname"
+  when: "'bd_standby' in inventory_hostname"
  
 - name: Register standby node
   become_user: postgres
-  shell: repmgr -h {{ node1_ip }} standby register -F
+  shell: repmgr standby register
   ignore_errors: yes
-  when: "'vm_2' in inventory_hostname"
+  when: "'bd_standby' in inventory_hostname"
 
-- name: Register witness mode
-  become_user: postgres
-  shell: repmgr -h {{ node1_ip }} withness register -F
-  ignore_errors: yes
-  when: "'vm_3' in inventory_hostname"
-
-- name: Start repmgrd
-  become_user: postgres
-  shell: repmgrd
-  ignore_errors: yes
+#- name: Start repmgrd
+#  become_user: postgres
+#  shell: repmgrd
+#  ignore_errors: yes
