@@ -3,11 +3,11 @@ linux: #Группа хостов
     nginx: #Имя подгруппы хостов
       hosts: #Узлы группы
         vm_1:
-          ansible_host: 89.169.153.38
+          ansible_host:
         vm_2:
-          ansible_host: 130.193.39.36
+          ansible_host:
         vm_3:
-          ansible_host: 51.250.75.158
+          ansible_host:
   vars: #Переменные, доступные или используемые для всех подгрупп
     ansible_user: admin
     ansible_ssh_private_key_file: ~/Sys_admin_12/ssh_cloud/id_ed25519
