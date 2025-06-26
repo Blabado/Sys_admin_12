@@ -37,6 +37,22 @@
     state: present
     key: "{{ lookup('file', 'keys/id_rsa.pub') }}"
   when: "'bd_primary' in inventory_hostname or 'bd_standby' in inventory_hostname"
+
+- name: Change PasswordAuthentication in sshd_config
+  become: true
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    state: present
+    regexp: '^PasswordAuthentication'
+    line: 'PasswordAuthentication no'
+
+- name: Add StrictHostKeyChecking in SSH
+  become: true
+  lineinfile:
+    path: /etc/ssh/ssh_config
+    state: present
+    regexp: '^StrictHostKeyChecking'
+    line: 'StrictHostKeyChecking accept-new'
  
 - name: Restart SSH service
   service:

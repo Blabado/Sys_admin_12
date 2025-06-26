@@ -92,7 +92,7 @@ generate_ssh_key() {
     sed 's/^\(ssh-ed25519 .*\) [^ ]*$/admin:\1 admin/' ./id_ed25519.pub > ./id_ed25519.pub.tmp
     mv ./id_ed25519.pub.tmp ./id_ed25519.pub
     echo "Generating SSH keys for Postgres_cluster...."
-    ssh-keygen -t rsa -f ~/Sys_admin_12/ansible/install_ssh/keys/id_rsa
+    ssh-keygen -t rsa -f ~/Sys_admin_12/ansible/install_ssh/files/keys/id_rsa
     #Insert ssh keygen for vm
     cd ..
 }

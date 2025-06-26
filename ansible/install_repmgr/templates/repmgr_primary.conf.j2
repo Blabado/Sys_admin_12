@@ -11,6 +11,10 @@ pg_bindir = '/usr/lib/postgresql/16/bin'
 #follow_command = 'repmgr standby follow -f /etc/repmgr.conf'
 log_level = INFO
 log_file = '/var/log/postgresql/repmgr.log'
+service_start_command   = 'sudo pg_ctlcluster 16 main start'
+service_stop_command    = 'sudo pg_ctlcluster 16 main stop'
+service_restart_command = 'sudo pg_ctlcluster 16 main restart'
+service_reload_command  = 'sudo pg_ctlcluster 16 main reload'
  
 #monitoring_history=yes
 #monitor_interval_secs=5

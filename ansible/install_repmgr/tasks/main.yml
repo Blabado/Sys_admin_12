@@ -74,6 +74,12 @@
   ignore_errors: yes
   when: "'bd_standby' in inventory_hostname"
 
+- name: Add postgres in google-sudoers for pg_ctlcluster
+  user:
+    name: postgres
+    groups: google-sudoers
+    append: yes
+
 #- name: Start repmgrd
 #  become_user: postgres
 #  shell: repmgrd
