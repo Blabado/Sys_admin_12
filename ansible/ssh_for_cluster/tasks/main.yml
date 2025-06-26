@@ -15,7 +15,7 @@
  
 - name: Copy SSH private key for repmgr
   copy:
-    src: "keys/id_rsa"
+    src: id_rsa
     dest: /var/lib/postgresql/.ssh/id_rsa
     owner: postgres
     group: postgres
@@ -24,7 +24,7 @@
  
 - name: Copy SSH public key for repmgr
   copy:
-    src: "keys/id_rsa.pub"
+    src: id_rsa.pub
     dest: /var/lib/postgresql/.ssh/id_rsa.pub
     owner: postgres
     group: postgres
@@ -42,4 +42,4 @@
   service:
     name: sshd
     enabled: yes
-    state: restarted
+    state: restarted---

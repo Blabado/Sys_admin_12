@@ -37,7 +37,7 @@ install_yc_cli() {
 install_terraform() {
     echo "Installing Terraform.."
     wget https://hashicorp-releases.yandexcloud.net/terraform/1.9.2/terraform_1.9.2_linux_amd64.zip && sudo unzip terraform_1.9.2_linux_amd64.zip -d /usr/bin 
-    rm -rf ~/terraform_1.9.2_linux_amd64.zip
+    rm -rf ~/Sys_admin_12/terraform_1.9.2_linux_amd64.zip
 }
 
 configure_yc() {
@@ -92,7 +92,7 @@ generate_ssh_key() {
     sed 's/^\(ssh-ed25519 .*\) [^ ]*$/admin:\1 admin/' ./id_ed25519.pub > ./id_ed25519.pub.tmp
     mv ./id_ed25519.pub.tmp ./id_ed25519.pub
     echo "Generating SSH keys for Postgres_cluster...."
-    ssh-keygen -t rsa -f ~/Sys_admin_12/ansible/install_ssh/keys/id.rsa
+    ssh-keygen -t rsa -f ~/Sys_admin_12/ansible/install_ssh/keys/id_rsa
     #Insert ssh keygen for vm
     cd ..
 }
