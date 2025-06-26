@@ -1,0 +1,22 @@
+---
+- name: Установка PostgresSQL
+  apt:
+    name: "postgresql"
+    state: present
+
+- name: Copy database configuration
+  template:
+    src: full_postgresql.conf.j2
+    dest: /etc/postgresql/16/main/postgresql.conf
+    group: postgres
+    mode: '0644'
+    owner: postgres
+
+- name: Copy user access configuration
+  template:
+    src: pg_hba.conf.j2
+    dest: /etc/postgresql/16/main/pg_hba.conf
+    group: postgres
+    mode: '0640'
+    owner: postgres
+

@@ -1,11 +1,13 @@
 linux: #Группа хостов
   children: #Обозначение, что будет подгруппа хостов
-    nginx: #Имя подгруппы хостов
+    postgres_cluster: #Имя подгруппы хостов
       hosts: #Узлы группы
         bd_primary:
           ansible_host:
         bd_standby:
           ansible_host:
+    trash:
+      hosts:    
         vm_3:
           ansible_host:
   vars: #Переменные, доступные или используемые для всех подгрупп

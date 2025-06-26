@@ -9,7 +9,7 @@ fi
 
 check_programs() {
     echo "Checking required programs..."
-    local programs=("unzip" "curl" "terraform" "ansible" "ssh")
+    local programs=("unzip" "curl" "wget" "ansible" "ssh")
     local missing=()
 
     for program in "${programs[@]}"; do
@@ -32,6 +32,12 @@ install_yc_cli() {
     curl -sSL https://storage.yandexcloud.net/yandexcloud-yc/install.sh | bash
     sudo cp ~/yandex-cloud/bin/* /usr/bin/
     rm -rf ~/yandex-cloud
+}
+
+install_terraform() {
+    echo "Installing Terraform.."
+    wget https://hashicorp-releases.yandexcloud.net/terraform/1.9.2/terraform_1.9.2_linux_amd64.zip && sudo unzip terraform_1.9.2_linux_amd64.zip -d /usr/bin 
+    rm -rf ~/terraform_1.9.2_linux_amd64.zip
 }
 
 configure_yc() {
@@ -79,12 +85,15 @@ init_terraform() {
 }
 
 generate_ssh_key() {
-    echo "Generating SSH keys..."
+    echo "Generating SSH keys for Ansible...."
     mkdir -p ./ssh_cloud
     cd ssh_cloud
     ssh-keygen -t ed25519 -f ./id_ed25519 -N ""
     sed 's/^\(ssh-ed25519 .*\) [^ ]*$/admin:\1 admin/' ./id_ed25519.pub > ./id_ed25519.pub.tmp
     mv ./id_ed25519.pub.tmp ./id_ed25519.pub
+    echo "Generating SSH keys for Postgres_cluster...."
+    ssh-keygen -t rsa -f ~/Sys_admin_12/ansible/install_ssh/keys/id.rsa
+    #Insert ssh keygen for vm
     cd ..
 }
 
@@ -207,6 +216,14 @@ answer=${answer:-y}
 
 if [[ "$answer" == "y" ]]; then
     install_yc_cli
+fi
+
+echo "Do you want to install Terraform? [n/Y]"
+read answer
+answer=${answer:-y}
+
+if [[ "$answer" == "y" ]]; then
+    install_terraform
 fi
 
 #---------------------------DEBUG-RUN------------------------------------------

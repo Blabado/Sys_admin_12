@@ -14,11 +14,30 @@
 #    - nginx_custom 
 
 
-- name: Установка postgresql, repmgr и запуск кластера
+- name: Установка postgresql
+  hosts: postgres_cluster
+  become: yes
+  gather_facts: yes
+  roles:
+    - role: install_postgres
+  tags:
+    - install_postgres
+
+- name: Установка ssh
   hosts: all
   become: yes
   gather_facts: yes
   roles:
-    - role: postgres_cluster
+    - role: install_ssh
   tags:
-    - postgres_cluster
+    - install_ssh
+
+- name: Установка ssh
+  hosts: postgres_cluster
+  become: yes
+  gather_facts: yes
+  roles:
+    - role: install_repmgr
+  tags:
+    - install_repmgr
+
