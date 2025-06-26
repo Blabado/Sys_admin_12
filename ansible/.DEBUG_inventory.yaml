@@ -6,9 +6,9 @@ linux: #Группа хостов
           ansible_host:
         bd_standby:
           ansible_host:
-    trash:
+    media_wiki:
       hosts:    
-        vm_3:
+        wiki_1:
           ansible_host:
   vars: #Переменные, доступные или используемые для всех подгрупп
     ansible_user: admin

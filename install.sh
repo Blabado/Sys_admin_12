@@ -138,14 +138,14 @@ while true; do
     ((count++))
 done
 
-#Extract IP BD_WITHNESS
+#Extract IP Wiki_1
 
 count=0
 
 while true; do
     name_ip=$(awk '{print $4}' external_ip.txt.tmp | tail -n +$((count)) | head -n 1)
     #echo "$name_ip"
-    if [[ $name_ip == "bd_witness" ]]; then
+    if [[ $name_ip == "wiki_1" ]]; then
         echo "[Successful extraction of the db_witness ip address]"
         awk '{print $10}' external_ip.txt.tmp | tail -n +$((count)) | head -n 1 >> external_ip.txt
         break
@@ -188,8 +188,10 @@ wait_for_hosts() {
 run_ansible_playbooks() {
     echo "Running Ansible playbooks..."
     cd ansible
-    ansible-playbook playbook.yaml -i inventory.yaml --tags="install_packages" | tee -a ~/Sys_admin_12/Log.txt
-    ansible-playbook playbook.yaml -i inventory.yaml --tags="nginx_custom" | tee -a ~/Sys_admin_12/Log.txt
+    ansible-playbook playbook.yaml -i inventory.yaml --tags="install_postgres" | tee -a ~/Sys_admin_12/Log.txt
+    ansible-playbook playbook.yaml -i inventory.yaml --tags="install_ssh" | tee -a ~/Sys_admin_12/Log.txt
+    ansible-playbook playbook.yaml -i inventory.yaml --tags="install_repmgr" | tee -a ~/Sys_admin_12/Log.txt
+    ansible-playbook playbook.yaml -i inventory.yaml --tags="create_wiki_db" | tee -a ~/Sys_admin_12/Log.txt
     cd ..
 
     echo "Setup complete!"
@@ -268,10 +270,10 @@ if [[ "$@" =~ "--debug" ]]; then
         wait_for_hosts
     fi
 
-#    if debug_skip "run_ansible_playbooks"; then
-#        run_ansible_playbooks
-#    fi
-#
+    if debug_skip "run_ansible_playbooks"; then
+        run_ansible_playbooks
+    fi
+
 #    if debug_skip "take_feedback"; then
 #        take_feedback
 #    fi

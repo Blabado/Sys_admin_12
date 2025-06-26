@@ -1,0 +1,81 @@
+#SPDX-License-Identifier: MIT-0
+---
+# - name: Установить и настроить nginx + MediaWiki (база на удалённой ПГ)
+#   hosts: mediawiki_server
+#   become: true
+#   vars:
+#     mediawiki_version: "1.39.0"
+#     mediawiki_url: "https://releases.wikimedia.org/mediawiki/{{ mediawiki_version }}/mediawiki-{{ mediawiki_version }}.tar.gz"
+#     mediawiki_root: /var/www/mediawiki
+#     db_host: "{{ hostvars['postgresql_db']['ansible_host'] }}"
+#     db_name: mediawiki
+#     db_user: mediawiki
+#     db_pass: "{{ vault_mediawiki_db_pass }}"
+- name: Install Media Wiki dependens
+  become: true
+  apt:
+    update_cache: true
+    name:
+      - nginx
+      - php-fpm
+      - php-zip
+      - php-intl 
+      - php-mbstring 
+      - php-apcu 
+      - php-curl 
+      - php-xml 
+      - php-pgsql
+    state: present
+
+- name: nginx start
+  systemd:
+    name: nginx
+    state: started
+    enabled: true
+ 
+- name: php start
+  systemd:
+    name: php8.3-fpm
+    state: started
+    enabled: true
+
+- name: Download MediaWiki
+  get_url:
+    url: https://releases.wikimedia.org/mediawiki/1.43/mediawiki-1.43.1.tar.gz
+    dest: "/tmp/mediawiki-1.43.1.tar.gz"
+    mode: '0644'
+ 
+- name: Uncompress MediaWiki
+  unarchive:
+    src: "/tmp/mediawiki-1.43.tar.gz"
+    dest: /var/www/html
+    remote_src: yes
+    creates: /var/www/html/mediawiki-1.43.1"
+ 
+- name: Сhange the rights to the directory
+  file:
+    path: /var/www/html/mediawiki-1.43.1
+    owner: admin
+    group: admin
+    recurse: yes
+ 
+- name: Copy configurate file nginx for MediaWiki
+  template:
+    src: mediawiki.nginx.j2
+    dest: /etc/nginx/sites-available/mediawiki
+
+- name: Simlinks 
+  file:
+    src: /etc/nginx/sites-available/mediawiki
+    dest: /etc/nginx/sites-enabled/mediawiki
+    state: link
+ 
+- name: Delete default site nginx
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+
+- name: Reload nginx
+  systemd:
+    name: nginx
+    state: reloaded

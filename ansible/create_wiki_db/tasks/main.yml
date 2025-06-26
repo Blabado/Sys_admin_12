@@ -1,0 +1,32 @@
+#SPDX-License-Identifier: MIT-0
+---
+- name: Install PostgreSQL Python client dependencies
+  become: true
+  apt:
+    name:
+      - build-essential
+      - python3-pip
+      - python3-dev
+      - libpq-dev
+      - python3-psycopg2
+    state: present
+
+- name: Create PostgreSQL user wikiuser
+  become: yes
+  become_user: postgres
+  community.postgresql.postgresql_user:
+    name: wikiuser
+    password: passwd
+    role_attr_flags: NOSUPERUSER,NOCREATEDB,NOCREATEROLE
+    login_unix_socket: /var/run/postgresql
+    state: present
+  when: "'bd_primary' in inventory_hostname"
+
+- name: Create my_wiki owner wikiuser
+  become: true
+  community.postgresql.postgresql_db:
+    name: my_wiki
+    owner: wikiuser
+    state: present
+  become_user: postgres
+  when: "'bd_primary' in inventory_hostname"

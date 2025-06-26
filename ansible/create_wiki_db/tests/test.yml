@@ -3,4 +3,4 @@
 - hosts: localhost
   remote_user: root
   roles:
-    - nginx_custom
+    - create_wiki_db

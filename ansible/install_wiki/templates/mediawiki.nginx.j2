@@ -1,0 +1,22 @@
+server {
+    listen 80;
+    index index.php index.html;
+    root /var/www/html/mediawiki-1.43.1;
+
+    client_max_body_size 100m;
+    client_body_timeout 60;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+    location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/run/php/php8.3-fpm.sock;
+    }
+#    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg)$ {
+#        expires max;
+#        log_not_found off;
+#    }
+#    location = /LocalSettings.php { deny all; }
+#    location ~* /(cache|includes|languages|tests|maintenance)/ { deny all; }
+}

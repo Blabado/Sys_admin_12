@@ -32,7 +32,7 @@
   tags:
     - install_ssh
 
-- name: Установка ssh
+- name: Установка repmgr
   hosts: postgres_cluster
   become: yes
   gather_facts: yes
@@ -40,4 +40,21 @@
     - role: install_repmgr
   tags:
     - install_repmgr
+
+- name: Создать пользователя wikiuser и базу данных
+  hosts: postgres_cluster
+  become: yes
+  gather_facts: yes
+  roles:
+    - role: create_wiki_db
+  tags:
+    - create_wiki_db
+- name: Запускаем Media_wiki
+  hosts: media_wiki
+  become: yes
+  gather_facts: yes
+  roles:
+    - role: install_wiki
+  tags:
+    - install_wiki
 

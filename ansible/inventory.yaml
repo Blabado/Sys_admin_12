@@ -3,13 +3,13 @@ linux: #Группа хостов
     postgres_cluster: #Имя подгруппы хостов
       hosts: #Узлы группы
         bd_primary:
-          ansible_host:
+          ansible_host: 89.169.156.226
         bd_standby:
-          ansible_host:
-    trash:
+          ansible_host: 51.250.78.132
+    media_wiki:
       hosts:    
-        vm_3:
-          ansible_host:
+        wiki_1:
+          ansible_host: 89.169.131.185
   vars: #Переменные, доступные или используемые для всех подгрупп
     ansible_user: admin
     ansible_ssh_private_key_file: ~/Sys_admin_12/ssh_cloud/id_ed25519
