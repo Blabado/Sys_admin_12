@@ -268,13 +268,13 @@ if [[ "$@" =~ "--debug" ]]; then
         wait_for_hosts
     fi
 
-    if debug_skip "run_ansible_playbooks"; then
-        run_ansible_playbooks
-    fi
-
-    if debug_skip "take_feedback"; then
-        take_feedback
-    fi
+#    if debug_skip "run_ansible_playbooks"; then
+#        run_ansible_playbooks
+#    fi
+#
+#    if debug_skip "take_feedback"; then
+#        take_feedback
+#    fi
     exit
 fi
 
@@ -287,7 +287,7 @@ run_terraform
 extract_ip
 insert_ip_into_inventory
 wait_for_hosts
-run_ansible_playbooks
-take_feedback
+#run_ansible_playbooks
+#take_feedback
 
 
