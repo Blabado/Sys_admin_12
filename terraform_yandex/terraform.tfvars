@@ -26,7 +26,7 @@ virtual_machines = {
       ram          = 2 # Оперативная память в ГБ
       disk         = 20 # Объём диска в ГБ
       disk_name    = "ubuntu-22-disk_3" # Название диска
-      template     = "fd8fg9122rbijs11lnvd" # ID образа ОС для использования
+      template     = "fd85bll745cg76f707mq" # ID образа ОС для использования
       ip_address   = "192.168.10.30"
     }
 } 
