@@ -2,23 +2,34 @@ node_id = 1
 node_name = 'node1'
 conninfo = 'host=192.168.10.10 user=repmgr dbname=repmgr'
 data_directory = '/var/lib/postgresql/16/main'
+
+# Слоты репликации (желательно)
 use_replication_slots = yes
-#reconnect_attempts = 5
-#reconnect_interval = 1
-#failover = automatic
+
+# Путь к бинарным файлам PostgreSQL
 pg_bindir = '/usr/lib/postgresql/16/bin'
-#promote_command = 'repmgr standby promote -f /etc/repmgr.conf'
-#follow_command = 'repmgr standby follow -f /etc/repmgr.conf'
-log_level = INFO
-log_file = '/var/log/postgresql/repmgr.log'
+
+# Команды управления сервисом PostgreSQL
 service_start_command   = 'sudo pg_ctlcluster 16 main start'
 service_stop_command    = 'sudo pg_ctlcluster 16 main stop'
 service_restart_command = 'sudo pg_ctlcluster 16 main restart'
 service_reload_command  = 'sudo pg_ctlcluster 16 main reload'
- 
-#monitoring_history=yes
-#monitor_interval_secs=5
-#log_status_interval=5
-#promote_check_timeout=5
-#promote_check_interval=1
-#master_response_timeout=5
+
+# Команды, используемые при failover (даже на primary!)
+promote_command = 'repmgr standby promote -f /etc/repmgr.conf'
+follow_command  = 'repmgr standby follow -f /etc/repmgr.conf'
+
+# Поведение при сбое
+failover = automatic
+
+# Мониторинг состояния кластера
+monitoring_history = yes
+monitor_interval_secs = 2
+log_status_interval = 60
+promote_check_timeout = 10
+promote_check_interval = 2
+master_response_timeout = 5
+
+# Логирование
+log_level = INFO
+log_file  = '/var/log/postgresql/repmgr.log'

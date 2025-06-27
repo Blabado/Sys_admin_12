@@ -12,12 +12,18 @@
 #    - role: nginx_custom
 #  tags:
 #    - nginx_custom 
-
+- name: Установка default_package
+  hosts: all
+  become: yes
+  gather_facts: yes
+  roles:
+    - role: default_package
+  tags:
+    - default_package
 
 - name: Установка postgresql
   hosts: postgres_cluster
   become: yes
-  gather_facts: yes
   roles:
     - role: install_postgres
   tags:
@@ -26,7 +32,6 @@
 - name: Установка ssh
   hosts: all
   become: yes
-  gather_facts: yes
   roles:
     - role: install_ssh
   tags:
@@ -35,7 +40,6 @@
 - name: Установка repmgr
   hosts: postgres_cluster
   become: yes
-  gather_facts: yes
   roles:
     - role: install_repmgr
   tags:
@@ -44,15 +48,14 @@
 - name: Создать пользователя wikiuser и базу данных
   hosts: postgres_cluster
   become: yes
-  gather_facts: yes
   roles:
     - role: create_wiki_db
   tags:
     - create_wiki_db
+
 - name: Запускаем Media_wiki
   hosts: media_wiki
   become: yes
-  gather_facts: yes
   roles:
     - role: install_wiki
   tags:

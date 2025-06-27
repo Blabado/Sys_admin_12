@@ -1,10 +1,24 @@
 # tasks for postgresql_claster
 ---
 - name: Установка repmgr
+  become: true
   apt:
-    name: "repmgr"
+    name: 
+      - repmgr
+      - postgresql-16-repmgr
     state: present
-  when: "'bd_primary' in inventory_hostname or 'bd_standby' in inventory_hostname"
+
+- name: Проверить наличие repmgr_funcs.so
+  stat:
+    path: "/usr/lib/postgresql/16/lib/repmgr_funcs.so"
+  register: repmgr_funcs
+
+- name: Restart PostgreSQL
+  systemd:
+    name: postgresql
+    enabled: yes
+    state: restarted
+
 
 - name: Setup repmgr user and database
   become: true
@@ -16,13 +30,13 @@
     createdb repmgr --owner=repmgr
   when: "'bd_primary' in inventory_hostname or 'bd_standby' in inventory_hostname"
 
-- name: Copy repmgr configuration in vm_1
+- name: Copy repmgr configuration in primary
   template:
     src: repmgr_primary.conf.j2
     dest: /etc/repmgr.conf
   when: "'bd_primary' in inventory_hostname"
 
-- name: Copy repmgr configuration in vm_2
+- name: Copy repmgr configuration in primary
   template:
     src: repmgr_standby.conf.j2
     dest: /etc/repmgr.conf
@@ -80,7 +94,9 @@
     groups: google-sudoers
     append: yes
 
-#- name: Start repmgrd
-#  become_user: postgres
-#  shell: repmgrd
-#  ignore_errors: yes
+- name: Ensure repmgrd service is started and enabled
+  become: true
+  ansible.builtin.systemd:
+    name: repmgrd
+    enabled: yes
+    state: started

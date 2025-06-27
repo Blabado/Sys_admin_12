@@ -1,16 +1,5 @@
 #SPDX-License-Identifier: MIT-0
 ---
-- name: Install PostgreSQL Python client dependencies
-  become: true
-  apt:
-    name:
-      - build-essential
-      - python3-pip
-      - python3-dev
-      - libpq-dev
-      - python3-psycopg2
-    state: present
-
 - name: Create PostgreSQL user wikiuser
   become: yes
   become_user: postgres

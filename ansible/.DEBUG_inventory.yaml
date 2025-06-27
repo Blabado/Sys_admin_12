@@ -11,7 +11,7 @@ linux: #Группа хостов
         wiki_1:
           ansible_host:
   vars: #Переменные, доступные или используемые для всех подгрупп
-    ansible_user: admin
+    ansible_user: sys_admin
     ansible_ssh_private_key_file: ~/Sys_admin_12/ssh_cloud/id_ed25519
     ansible_become: true #Становиться ли другим пользователем после подключения
     #become_user: root

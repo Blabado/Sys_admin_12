@@ -5,8 +5,8 @@ virtual_machines = {
       vm_cpu       = 2 # Кол-во ядер процессора
       ram          = 2 # Оперативная память в ГБ
       disk         = 20 # Объём диска в ГБ
-      disk_name    = "ubuntu-24-disk_1" # Название диска
-      template     = "fd85bll745cg76f707mq" # ID образа ОС для использования
+      disk_name    = "ubuntu-22-disk_1" # Название диска
+      template     = "fd8fg9122rbijs11lnvd" # ID образа ОС для использования
       ip_address   = "192.168.10.10"
     },
     "vm-2" = {
@@ -15,8 +15,8 @@ virtual_machines = {
       vm_cpu       = 2 # Кол-во ядер процессора
       ram          = 2 # Оперативная память в ГБ
       disk         = 20 # Объём диска в ГБ
-      disk_name    = "ubuntu-24-disk_2" # Название диска
-      template     = "fd85bll745cg76f707mq" # ID образа ОС для использования
+      disk_name    = "ubuntu-22-disk_2" # Название диска
+      template     = "fd8fg9122rbijs11lnvd" # ID образа ОС для использования
       ip_address   = "192.168.10.20"
     }
     "vm-3" = {
@@ -25,8 +25,8 @@ virtual_machines = {
       vm_cpu       = 2 # Кол-во ядер процессора
       ram          = 2 # Оперативная память в ГБ
       disk         = 20 # Объём диска в ГБ
-      disk_name    = "ubuntu-24-disk_3" # Название диска
-      template     = "fd85bll745cg76f707mq" # ID образа ОС для использования
+      disk_name    = "ubuntu-22-disk_3" # Название диска
+      template     = "fd8fg9122rbijs11lnvd" # ID образа ОС для использования
       ip_address   = "192.168.10.30"
     }
 } 

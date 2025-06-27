@@ -13,5 +13,6 @@ wal_level = replica
 max_wal_senders = 10
 max_replication_slots = 10
 hot_standby = on
+shared_preload_libraries = 'repmgr_funcs'
 #archive_mode = on
 #archive_command = '/bin/true'
