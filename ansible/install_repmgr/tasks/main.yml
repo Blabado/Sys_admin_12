@@ -3,22 +3,8 @@
 - name: Установка repmgr
   become: true
   apt:
-    name: 
-      - repmgr
-      - postgresql-16-repmgr
+    name: repmgr
     state: present
-
-- name: Проверить наличие repmgr_funcs.so
-  stat:
-    path: "/usr/lib/postgresql/16/lib/repmgr_funcs.so"
-  register: repmgr_funcs
-
-- name: Restart PostgreSQL
-  systemd:
-    name: postgresql
-    enabled: yes
-    state: restarted
-
 
 - name: Setup repmgr user and database
   become: true

@@ -1,6 +1,6 @@
 node_id = 2
 node_name = 'node2'
-conninfo = 'host=192.168.10.11 user=repmgr dbname=repmgr'
+conninfo = 'host=192.168.10.20 user=repmgr dbname=repmgr'
 data_directory = '/var/lib/postgresql/16/main'
 
 # Репликация
@@ -24,7 +24,8 @@ monitor_interval_secs   = 2
 log_status_interval     = 60
 promote_check_timeout   = 10
 promote_check_interval  = 2
-master_response_timeout = 5
+reconnect_attempts      = 3
+reconnect_interval      = 5
 
 # Приоритет выбора standby при failover (чем выше, тем предпочтительнее)
 priority = 100
