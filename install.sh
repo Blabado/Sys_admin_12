@@ -1,4 +1,5 @@
-#!/bin/bash
+##!/bin/bash
+#!/usr/bin/env bash
 if [[ "$@" =~ "--debug" ]]; then
     rm Log.txt
     cp ansible/.DEBUG_inventory.yaml ansible/inventory.yaml

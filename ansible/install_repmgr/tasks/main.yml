@@ -80,9 +80,7 @@
     groups: google-sudoers
     append: yes
 
-- name: Ensure repmgrd service is started and enabled
-  become: true
-  ansible.builtin.systemd:
-    name: repmgrd
-    enabled: yes
-    state: started
+- name: Start repmgrd
+  become_user: postgres
+  shell: repmgrd
+  ignore_errors: yes

@@ -21,3 +21,9 @@
     mode: '0640'
     owner: postgres
 
+- name: Disable autostart PostgreSQL
+  become: true
+  service:
+    name: postgresql
+    enabled: no
+  when: "'bd_primary' in inventory_hostname"
