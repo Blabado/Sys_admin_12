@@ -16,7 +16,7 @@ service_restart_command = 'sudo pg_ctlcluster 16 main restart'
 service_reload_command  = 'sudo pg_ctlcluster 16 main reload'
 
 # Команды, используемые при failover (даже на primary!)
-promote_command = 'repmgr standby promote -f /etc/repmgr.conf'
+promote_command = '/var/lib/postgresql/promote_hook.sh'
 follow_command  = 'repmgr standby follow -f /etc/repmgr.conf'
 
 # Поведение при сбое

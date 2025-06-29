@@ -21,6 +21,12 @@
     mode: '0640'
     owner: postgres
 
+- name: Add postgres in google-sudoers for pg_ctlcluster
+  user:
+    name: postgres
+    groups: google-sudoers
+    append: yes
+
 - name: Disable autostart PostgreSQL
   become: true
   service:

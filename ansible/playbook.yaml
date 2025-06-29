@@ -22,7 +22,7 @@
     - default_package
 
 - name: Установка postgresql
-  hosts: postgres_cluster
+  hosts: postgres_cluster:media_wiki
   become: yes
   roles:
     - role: install_postgres
@@ -30,7 +30,7 @@
     - install_postgres
 
 - name: Установка ssh
-  hosts: all
+  hosts: postgres_cluster:media_wiki
   become: yes
   roles:
     - role: install_ssh

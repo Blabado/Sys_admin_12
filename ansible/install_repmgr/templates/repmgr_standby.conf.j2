@@ -15,7 +15,7 @@ service_reload_command  = 'sudo pg_ctlcluster 16 main reload'
 
 # Failover и follow
 failover = automatic
-promote_command = 'repmgr standby promote -f /etc/repmgr.conf'
+promote_command = '/var/lib/postgresql/promote_hook.sh'
 follow_command  = 'repmgr standby follow -f /etc/repmgr.conf'
 
 # Мониторинг состояния кластера

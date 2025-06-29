@@ -80,11 +80,11 @@
 - name: Copy file LocalSettings
   become: true
   copy:
-    src: LocalSettings.php  # укажите полный путь к файлу на локальном компьютере
-    dest: /var/www/html/mediawiki-1.43.1/  # путь, куда нужно скопировать файл
-    owner: sys_admin  # владелец файла, если необходимо
-    group: sys_admin  # группа файла, если необходимо
-    mode: '0644'  # права доступа к файлу, если необходимо
+    src: LocalSettings.php 
+    dest: /var/www/html/mediawiki-1.43.1/
+    owner: sys_admin
+    group: sys_admin 
+    mode: '0644' 
 
 - name: Reload nginx
   systemd:
