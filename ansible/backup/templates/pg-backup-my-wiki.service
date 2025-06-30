@@ -1,0 +1,7 @@
+[Unit]
+Description=Logical PostgreSQL Backup of my_wiki Database
+
+[Service]
+Type=oneshot
+User=postgres
+ExecStart=/var/lib/postgresql/backup.sh

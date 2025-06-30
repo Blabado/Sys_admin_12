@@ -17,12 +17,11 @@ if ( !defined( 'MEDIAWIKI' ) ) {
 
 
 
-
 ## Uncomment this to disable output compression
 # $wgDisableOutputCompression = true;
 
-$wgSitename = "helwrld_med_wki";
-$wgMetaNamespace = "Helwrld_med_wki";
+$wgSitename = "wiki_sys_admin";
+$wgMetaNamespace = "Wiki_sys_admin";
 
 ## The URL base path to the directory containing the wiki;
 ## defaults for all runtime URL paths are based off of this.
@@ -32,7 +31,7 @@ $wgMetaNamespace = "Helwrld_med_wki";
 $wgScriptPath = "";
 
 ## The protocol and server name to use in fully-qualified URLs
-$wgServer = "http://89.169.146.200";
+$wgServer = "http://158.160.48.29";
 
 ## The URL path to static resources (images, scripts, etc.)
 $wgResourceBasePath = $wgScriptPath;
@@ -58,7 +57,13 @@ $wgEmailAuthentication = true;
 
 ## Database settings
 $wgDBtype = "postgres";
-$wgDBserver = "192.168.10.10";
+
+if (file_exists('/var/www/html/mediawiki-1.43.1/backup_mode')) {
+    $wgDBserver = '192.168.10.20';
+} else {
+    $wgDBserver = '192.168.10.10';
+}
+
 $wgDBname = "my_wiki";
 $wgDBuser = "wikiuser";
 $wgDBpassword = "passwd";
@@ -101,14 +106,14 @@ $wgLocaltimezone = "UTC";
 ## be publicly accessible from the web.
 #$wgCacheDirectory = "$IP/cache";
 
-$wgSecretKey = "1a334f38b07ce378b513fff59ea921905a1cdd8d9dd2726e3670d9865eb1fb84";
+$wgSecretKey = "588c2830c94f14a6e8433b24b7bf6b95a87afdea675d84b4579e6db5e4108e97";
 
 # Changing this will log out all existing sessions.
 $wgAuthenticationTokenVersion = "1";
 
 # Site upgrade key. Must be set to a string (default provided) to turn on the
 # web installer while LocalSettings.php is in place
-$wgUpgradeKey = "e7c9ea358754b429";
+$wgUpgradeKey = "a29bbd0ca5cb13a4";
 
 ## For attaching licensing metadata to pages, and displaying an
 ## appropriate copyright notice / icon. GNU Free Documentation
@@ -143,4 +148,5 @@ wfLoadExtension( 'WikiEditor' );
 
 # End of automatically generated settings.
 # Add more configuration options below.
+
 

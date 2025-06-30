@@ -6,7 +6,7 @@ def search_key_line(file_name, key_line):
         for line in file:
             if re.search(key_line, line):
                 count += 1
-                if count == 3:
+                if count == 5:
                     return 0  # Возвращаем 1, если нашли три строки
     return 1  # Возвращаем 0, если не нашли три строки
 

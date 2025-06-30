@@ -5,7 +5,7 @@ virtual_machines = {
       vm_cpu       = 2 # Кол-во ядер процессора
       ram          = 2 # Оперативная память в ГБ
       disk         = 20 # Объём диска в ГБ
-      disk_name    = "ubuntu-22-disk_1" # Название диска
+      disk_name    = "ubuntu-22-disk_primary" # Название диска
       template     = "fd85bll745cg76f707mq" # ID образа ОС для использования
       ip_address   = "192.168.10.10"
     },
@@ -15,18 +15,39 @@ virtual_machines = {
       vm_cpu       = 2 # Кол-во ядер процессора
       ram          = 2 # Оперативная память в ГБ
       disk         = 20 # Объём диска в ГБ
-      disk_name    = "ubuntu-22-disk_2" # Название диска
+      disk_name    = "ubuntu-22-disk_standby" # Название диска
       template     = "fd85bll745cg76f707mq" # ID образа ОС для использования
       ip_address   = "192.168.10.20"
-    }
+    },
     "vm-3" = {
+      vm_name      = "backup_console" # Имя ВМ
+      vm_desc      = "Описание для инженеров. Его видно только здесь" # Описание
+      vm_cpu       = 2 # Кол-во ядер процессора
+      ram          = 2 # Оперативная память в ГБ
+      disk         = 20 # Объём диска в ГБ
+      disk_name    = "ubuntu-22-disk_backup" # Название диска
+      template     = "fd85bll745cg76f707mq" # ID образа ОС для использования
+      ip_address   = "192.168.10.100"
+    },
+    "vm-4" = {
       vm_name      = "wiki_1" # Имя ВМ
       vm_desc      = "Описание для инженеров. Его видно только здесь"
       vm_cpu       = 2 # Кол-во ядер процессора
       ram          = 2 # Оперативная память в ГБ
       disk         = 20 # Объём диска в ГБ
-      disk_name    = "ubuntu-22-disk_3" # Название диска
+      disk_name    = "ubuntu-22-wiki_1" # Название диска
       template     = "fd85bll745cg76f707mq" # ID образа ОС для использования
       ip_address   = "192.168.10.30"
-    }
+    },
+    "vm-5" = {
+      vm_name      = "wiki_2" # Имя ВМ
+      vm_desc      = "Описание для инженеров. Его видно только здесь"
+      vm_cpu       = 2 # Кол-во ядер процессора
+      ram          = 2 # Оперативная память в ГБ
+      disk         = 20 # Объём диска в ГБ
+      disk_name    = "ubuntu-22-wiki_2" # Название диска
+      template     = "fd85bll745cg76f707mq" # ID образа ОС для использования
+      ip_address   = "192.168.10.40"
+    },
+
 } 

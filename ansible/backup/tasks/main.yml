@@ -1,0 +1,68 @@
+---
+- name: mkdir /var/backups/postgres
+  become: true
+  ansible.builtin.file:
+    path: /var/lib/postgresql/backups
+    state: directory
+    owner: postgres
+    group: postgres
+    mode: '0755'
+
+- name: Copy backup on the "backup_console"
+  template:
+    src: wiki.sql
+    dest: /var/lib/postgresql/backups/wiki.sql
+    group: postgres
+    mode: '0644'
+    owner: postgres
+  when: "'backup_console' in inventory_hostname"
+
+- name: Copy backup_script on the "db_primary"
+  template:
+    src: backup.sh
+    dest: /var/lib/postgresql/backup.sh
+    group: postgres
+    mode: '0744'
+    owner: postgres
+  when: "'bd_primary' in inventory_hostname"
+
+- name: Copy pg_backup_my_wiki.service on the "db_primary"
+  become: true
+  template:
+    src: pg-backup-my-wiki.service
+    dest: /etc/systemd/system/pg-backup-my-wiki.service
+    group: postgres
+    mode: '0744'
+    owner: postgres
+  when: "'bd_primary' in inventory_hostname"
+
+- name: Copy pg-backup-my-wiki.timer on the "db_primary"
+  become: true
+  template:
+    src: pg-backup-my-wiki.timer
+    dest: /etc/systemd/system/pg-backup-my-wiki.timer
+    group: postgres
+    mode: '0744'
+    owner: postgres
+  when: "'bd_primary' in inventory_hostname"
+
+- name: Restore PostgreSQL database from remote backup server
+  become: true
+  become_user: postgres
+  shell: >
+    ssh postgres@192.168.10.100 "cat ~/backups/wiki.sql" | psql -U postgres -d my_wiki
+  args:
+    executable: /bin/bash
+  when: "'bd_primary' in inventory_hostname"
+
+- name: Reload systemd daemon
+  command: systemctl daemon-reload
+  when: "'bd_primary' in inventory_hostname"
+
+- name: Enable and start pg-backup-my-wiki.timer
+  become: yes
+  ansible.builtin.systemd:
+    name: pg-backup-my-wiki.timer
+    enabled: yes
+    state: started
+  when: "'bd_primary' in inventory_hostname"

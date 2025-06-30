@@ -138,15 +138,14 @@ while true; do
     ((count++))
 done
 
-#Extract IP Wiki_1
-
+#Extract IP Bacup_console
 count=0
 
 while true; do
     name_ip=$(awk '{print $4}' external_ip.txt.tmp | tail -n +$((count)) | head -n 1)
     #echo "$name_ip"
-    if [[ $name_ip == "wiki_1" ]]; then
-        echo "[Successful extraction of the db_witness ip address]"
+    if [[ $name_ip == "backup_console" ]]; then
+        echo "[Successful extraction of the bd_backup_console ip address]"
         awk '{print $10}' external_ip.txt.tmp | tail -n +$((count)) | head -n 1 >> external_ip.txt
         break
     fi
@@ -154,7 +153,35 @@ while true; do
     ((count++))
 done
 
+#Extract IP Wiki_1
+count=0
 
+while true; do
+    name_ip=$(awk '{print $4}' external_ip.txt.tmp | tail -n +$((count)) | head -n 1)
+    #echo "$name_ip"
+    if [[ $name_ip == "wiki_1" ]]; then
+        echo "[Successful extraction of the db_wiki_1 ip address]"
+        awk '{print $10}' external_ip.txt.tmp | tail -n +$((count)) | head -n 1 >> external_ip.txt
+        break
+    fi
+    
+    ((count++))
+done
+
+#Extract IP Wiki_2
+count=0
+
+while true; do
+    name_ip=$(awk '{print $4}' external_ip.txt.tmp | tail -n +$((count)) | head -n 1)
+    #echo "$name_ip"
+    if [[ $name_ip == "wiki_2" ]]; then
+        echo "[Successful extraction of the db_wiki_2 ip address]"
+        awk '{print $10}' external_ip.txt.tmp | tail -n +$((count)) | head -n 1 >> external_ip.txt
+        break
+    fi
+    
+    ((count++))
+done
 
 rm external_ip.txt.tmp
 }

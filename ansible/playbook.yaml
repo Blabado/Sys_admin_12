@@ -22,7 +22,7 @@
     - default_package
 
 - name: Установка postgresql
-  hosts: postgres_cluster:media_wiki
+  hosts: postgres_cluster:media_wiki:backup_con
   become: yes
   roles:
     - role: install_postgres
@@ -30,7 +30,7 @@
     - install_postgres
 
 - name: Установка ssh
-  hosts: postgres_cluster:media_wiki
+  hosts: postgres_cluster:media_wiki:backup_con
   become: yes
   roles:
     - role: install_ssh
@@ -52,6 +52,14 @@
     - role: create_wiki_db
   tags:
     - create_wiki_db
+
+- name: Настройка бэкапа
+  hosts: postgres_cluster:backup_con
+  become: yes
+  roles:
+    - role: backup
+  tags:
+    - backup
 
 - name: Запускаем Media_wiki
   hosts: media_wiki
