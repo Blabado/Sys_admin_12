@@ -1,0 +1,43 @@
+---
+- name: Install nginx
+  become: true
+  apt:
+    name: nginx
+    state: present
+
+- name: Install nginx for proxy
+  copy:
+    src: files/nginx_proxy.conf
+    dest: /etc/nginx/sites-available/nginx_proxy
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Simlimks sites-enabled
+  file:
+    src: /etc/nginx/sites-available/nginx_proxy
+    dest: /etc/nginx/sites-enabled/nginx_proxy
+    state: link
+    force: yes
+
+- name: Remove default nginx site configuration
+  ansible.builtin.file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+
+- name: Remove default nginx site configuration
+  ansible.builtin.file:
+    path: /etc/nginx/sites-available/default
+    state: absent
+
+- name: Check configurate nginx
+  become: true
+  command: nginx -t
+  register: nginx_test
+  changed_when: false
+  failed_when: nginx_test.rc != 0
+
+- name: Restart nginx
+  service:
+    name: nginx
+    state: restarted

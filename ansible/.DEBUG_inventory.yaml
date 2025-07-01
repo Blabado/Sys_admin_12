@@ -6,6 +6,8 @@ linux: #Группа хостов
           ansible_host:
         bd_standby:
           ansible_host:
+    backup_con:
+      hosts:    
         backup_console:
           ansible_host:
     media_wiki:
@@ -13,6 +15,14 @@ linux: #Группа хостов
         wiki_1:
           ansible_host:
         wiki_2:
+          ansible_host:
+    load_balancer:
+      hosts:
+        balancer:
+          ansible_host:
+    zabbix_server:
+      hosts:
+        zabbix:
           ansible_host:
   vars: #Переменные, доступные или используемые для всех подгрупп
     ansible_user: sys_admin

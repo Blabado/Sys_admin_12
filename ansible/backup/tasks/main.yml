@@ -66,3 +66,48 @@
     enabled: yes
     state: started
   when: "'bd_primary' in inventory_hostname"
+
+- name: Copy cleanup_script on the "backup_console"
+  template:
+    src: cleanup.sh
+    dest: /var/lib/postgresql/cleanup.sh
+    group: postgres
+    mode: '0744'
+    owner: postgres
+  when: "'backup_console' in inventory_hostname"
+
+- name: Copy cleanup_backups.service on the "backup_console"
+  become: true
+  template:
+    src: cleanup_backups.service
+    dest: /etc/systemd/system/cleanup_backups.service
+    group: postgres
+    mode: '0744'
+    owner: postgres
+  when: "'backup_console' in inventory_hostname"
+
+- name: Copy cleanup_backups.timer on the "db_primary"
+  become: true
+  template:
+    src: cleanup_backups_daily.timer
+    dest: /etc/systemd/system/cleanup_backups.timer
+    group: postgres
+    mode: '0744'
+    owner: postgres
+  when: "'backup_console' in inventory_hostname"
+
+- name: Reload systemd daemon
+  command: systemctl daemon-reload
+  when: "'backup_console' in inventory_hostname"
+
+- name: Enable and start cleanup_backups.timer
+  become: yes
+  ansible.builtin.systemd:
+    name: cleanup_backups.timer
+    enabled: yes
+    state: started
+  when: "'backup_console' in inventory_hostname"
+
+
+
+

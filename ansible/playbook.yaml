@@ -69,3 +69,19 @@
   tags:
     - install_wiki
 
+- name: Запускаем балансировщик
+  hosts: balancer
+  become: yes
+  roles:
+    - role: load_balancer
+  tags:
+    - load_balancer
+
+- name: Запускаем zabbix
+  hosts: zabbix
+  become: yes
+  roles:
+    - role: zabbix_server
+  tags:
+    - zabbix_server
+

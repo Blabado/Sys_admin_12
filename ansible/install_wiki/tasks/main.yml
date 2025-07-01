@@ -77,11 +77,11 @@
     path: /etc/nginx/sites-enabled/default
     state: absent
 
-- name: Copy file LocalSettings
+- name: Copy file LocalSettings for wiki
   become: true
   copy:
     src: LocalSettings.php 
-    dest: /var/www/html/mediawiki-1.43.1/
+    dest: /var/www/html/mediawiki-1.43.1/LocalSettings.php
     owner: sys_admin
     group: sys_admin 
     mode: '0644' 

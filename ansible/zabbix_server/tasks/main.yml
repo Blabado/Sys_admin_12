@@ -1,0 +1,96 @@
+--- 
+
+- name: Install dependens
+  become: true
+  apt:
+    name:
+      - wget
+      - gnupg
+      - apt-transport-https
+      - lsb-release
+    state: present
+    update_cache: yes
+
+- name: Download Zabbix release
+  get_url:
+    url: "https://repo.zabbix.com/zabbix/6.4/ubuntu/pool/main/z/zabbix-release/zabbix-release_6.4-1+ubuntu24.04_all.deb"
+    dest: /tmp/zabbix-release.deb
+
+- name: Install Zabbix release 
+  become: true
+  apt:
+    deb: /tmp/zabbix-release.deb
+    update_cache: yes
+
+- name: Install Zabbix and dependens (PostgreSQL Nginx)
+  apt:
+    name:
+      - zabbix-server-pgsql
+      - zabbix-frontend-php
+      - zabbix-sql-scripts
+      - zabbix-nginx-conf
+      - zabbix-agent
+      - postgresql
+      - php-fpm
+    state: present
+    update_cache: yes
+
+- name: Check PostgreSQL start
+  service:
+    name: postgresql
+    state: started
+    enabled: true
+
+- name: Create database Zabbix
+  become_user: postgres
+  postgresql_db:
+    name: zabbix
+    encoding: UTF8
+    lc_collate: en_US.UTF-8
+    lc_ctype: en_US.UTF-8
+
+- name: Create zabbix_user PostgreSQL for Zabbix
+  become_user: postgres
+  postgresql_user:
+    name: zabbix_user
+    password: passwd
+
+- name: Grant all privileges on database zabbix to user zabbix_user
+  become_user: postgres
+  postgresql_query:
+    db: zabbix
+    query: "GRANT ALL PRIVILEGES ON DATABASE zabbix TO zabbix_user;"
+
+- name: Import scheme for Zabbix
+  become_user: postgres
+  shell: |
+    zcat /usr/share/zabbix-sql-scripts/postgresql/server.sql.gz | psql zabbix
+  environment:
+    PGPASSWORD: passwd
+  args:
+    creates: /var/lib/postgresql/.zabbix_schema_loaded
+
+- name: Mark scheme
+  file:
+    path: /var/lib/postgresql/.zabbix_schema_loaded
+    state: touch
+
+- name: Copy file zabbix_server for zabbix
+  become: true
+  copy:
+    src: zabbix_server.conf
+    dest: /etc/zabbix/zabbix_server.conf
+    owner: sys_admin
+    group: sys_admin
+    mode: '0644'
+
+- name: Copy file LocalSettings for wiki
+  become: true
+  copy:
+    src: zabbix_server.conf
+    dest: /etc/zabbix/zabbix_server.conf
+    owner: sys_admin
+    group: sys_admin
+    mode: '0644'
+# Осталось nginx и перезапустить сервера 
+# И очень хорошо узнать куда будет смотреть zabbix

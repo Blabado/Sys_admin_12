@@ -31,7 +31,7 @@ $wgMetaNamespace = "Wiki_sys_admin";
 $wgScriptPath = "";
 
 ## The protocol and server name to use in fully-qualified URLs
-$wgServer = "http://158.160.48.29";
+$wgServer = "http://" . ($_SERVER['HTTP_HOST'] ?? 'localhost');
 
 ## The URL path to static resources (images, scripts, etc.)
 $wgResourceBasePath = $wgScriptPath;

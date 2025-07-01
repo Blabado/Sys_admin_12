@@ -183,6 +183,37 @@ while true; do
     ((count++))
 done
 
+#Extract IP load_balancer
+count=0
+
+while true; do
+    name_ip=$(awk '{print $4}' external_ip.txt.tmp | tail -n +$((count)) | head -n 1)
+    #echo "$name_ip"
+    if [[ $name_ip == "load_balancer" ]]; then
+        echo "[Successful extraction of the load_balancer ip address]"
+        awk '{print $10}' external_ip.txt.tmp | tail -n +$((count)) | head -n 1 >> external_ip.txt
+        break
+    fi
+    
+    ((count++))
+done
+
+#Extract IP zabbix
+count=0
+
+while true; do
+    name_ip=$(awk '{print $4}' external_ip.txt.tmp | tail -n +$((count)) | head -n 1)
+    #echo "$name_ip"
+    if [[ $name_ip == "zabbix" ]]; then
+        echo "[Successful extraction of the zabbix ip address]"
+        awk '{print $10}' external_ip.txt.tmp | tail -n +$((count)) | head -n 1 >> external_ip.txt
+        break
+    fi
+    
+    ((count++))
+done
+
+
 rm external_ip.txt.tmp
 }
 
@@ -215,13 +246,19 @@ wait_for_hosts() {
 run_ansible_playbooks() {
     echo "Running Ansible playbooks..."
     cd ansible
-    ansible-playbook playbook.yaml -i inventory.yaml --tags="install_postgres" | tee -a ~/Sys_admin_12/Log.txt
-    ansible-playbook playbook.yaml -i inventory.yaml --tags="install_ssh" | tee -a ~/Sys_admin_12/Log.txt
-    ansible-playbook playbook.yaml -i inventory.yaml --tags="install_repmgr" | tee -a ~/Sys_admin_12/Log.txt
-    ansible-playbook playbook.yaml -i inventory.yaml --tags="create_wiki_db" | tee -a ~/Sys_admin_12/Log.txt
+    ansible-playbook playbook.yaml -i inventory.yaml 
     cd ..
 
     echo "Setup complete!"
+}
+
+delete_external_ip() {
+    echo "Deliting external ip address"
+    yc compute instance remove-one-to-one-nat --name bd_primary --network-interface-index=0
+    yc compute instance remove-one-to-one-nat --name bd_standby --network-interface-index=0
+    yc compute instance remove-one-to-one-nat --name wiki_1 --network-interface-index=0
+    yc compute instance remove-one-to-one-nat --name wiki_2 --network-interface-index=0
+
 }
 
 take_feedback() {
@@ -301,6 +338,11 @@ if [[ "$@" =~ "--debug" ]]; then
         run_ansible_playbooks
     fi
 
+    if debug_skip "delete_external_ip"; then
+        delete_external_ip
+    fi
+
+
 #    if debug_skip "take_feedback"; then
 #        take_feedback
 #    fi
@@ -316,7 +358,8 @@ run_terraform
 extract_ip
 insert_ip_into_inventory
 wait_for_hosts
-#run_ansible_playbooks
+run_ansible_playbooks
+delete_external_ip
 #take_feedback
 
 
