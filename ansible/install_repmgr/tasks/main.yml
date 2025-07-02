@@ -32,7 +32,6 @@
 - name: Restart PostgreSQL
   systemd:
     name: postgresql
-    enabled: yes
     state: restarted
   when: "'bd_primary' in inventory_hostname or 'bd_standby' in inventory_hostname"
 

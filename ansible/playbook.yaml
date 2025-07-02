@@ -1,17 +1,4 @@
 --- 
-#- name: Установка стандартных пакетов
-#  hosts: all
-#  roles:
-#    - role: default_packages
-#  tags:
-#    - install_packages
-
-#- name: Установка и настройка nginx c кастомной страницей
-#  hosts: nginx # Будет работать на узлах в группе nginx
-#  roles:
-#    - role: nginx_custom
-#  tags:
-#    - nginx_custom 
 - name: Установка default_package
   hosts: all
   become: yes
@@ -77,11 +64,19 @@
   tags:
     - load_balancer
 
-- name: Запускаем zabbix
+- name: Запускаем zabbix-server
   hosts: zabbix
   become: yes
   roles:
     - role: zabbix_server
   tags:
     - zabbix_server
+
+- name: Запускаем zabbix-agent
+  hosts: all
+  become: yes
+  roles:
+    - role: zabbix_agent
+  tags:
+    - zabbix_agent
 

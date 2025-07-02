@@ -32,43 +32,97 @@
       - zabbix-agent
       - postgresql
       - php-fpm
+      - nginx 
+      - php-cli 
+      - php-mbstring 
+      - php-gd 
+      - php-xml 
+      - php-bcmath 
+      - php-ldap 
+      - php-pgsql 
+      - php-zip 
+      - php-json 
+      - php-curl 
+      - php-xmlrpc 
+      - php-bcmath
     state: present
     update_cache: yes
 
-- name: Check PostgreSQL start
+- name: Copy zabbix access configuration
+  become: true
+  template:
+    src: pg_hba.conf.j2
+    dest: /etc/postgresql/16/main/pg_hba.conf
+    group: postgres
+    mode: '0640'
+    owner: postgres
+
+- name: Copy zabbix php configuration
+  become: true
+  template:
+    src: php.ini
+    dest: /etc/php/8.3/fpm/php.ini
+    mode: '0644'
+
+- name: Copy zabbix nginx configuration
+  become: true
+  template:
+    src: zabbix
+    dest: /etc/nginx/sites-available/zabbix
+    mode: '0644'
+
+- name: Simlimks sites-enabled
+  file:
+    src: /etc/nginx/sites-available/zabbix
+    dest: /etc/nginx/sites-enabled/zabbix
+    state: link
+    force: yes
+
+- name: Remove default nginx site configuration
+  ansible.builtin.file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+
+- name: Remove default nginx site configuration
+  ansible.builtin.file:
+    path: /etc/nginx/sites-available/default
+    state: absent
+
+- name: Check configurate nginx
+  become: true
+  command: nginx -t
+  register: nginx_test
+  changed_when: false
+  failed_when: nginx_test.rc != 0
+
+- name: PostgreSQL restarted
   service:
     name: postgresql
-    state: started
+    state: restarted
     enabled: true
 
-- name: Create database Zabbix
+- name: Create PostgreSQL user zabbix_user
+  become: yes
   become_user: postgres
-  postgresql_db:
-    name: zabbix
-    encoding: UTF8
-    lc_collate: en_US.UTF-8
-    lc_ctype: en_US.UTF-8
-
-- name: Create zabbix_user PostgreSQL for Zabbix
-  become_user: postgres
-  postgresql_user:
+  community.postgresql.postgresql_user:
     name: zabbix_user
     password: passwd
+    role_attr_flags: NOSUPERUSER,NOCREATEDB,NOCREATEROLE
+    login_unix_socket: /var/run/postgresql
+    state: present
 
-- name: Grant all privileges on database zabbix to user zabbix_user
+- name: Create my_wiki owner wikiuser
+  become: true
+  community.postgresql.postgresql_db:
+    name: zabbix
+    owner: zabbix_user
+    state: present
   become_user: postgres
-  postgresql_query:
-    db: zabbix
-    query: "GRANT ALL PRIVILEGES ON DATABASE zabbix TO zabbix_user;"
 
 - name: Import scheme for Zabbix
   become_user: postgres
   shell: |
-    zcat /usr/share/zabbix-sql-scripts/postgresql/server.sql.gz | psql zabbix
-  environment:
-    PGPASSWORD: passwd
-  args:
-    creates: /var/lib/postgresql/.zabbix_schema_loaded
+    zcat /usr/share/zabbix-sql-scripts/postgresql/server.sql.gz | PGPASSWORD='passwd' psql -U zabbix_user -d zabbix
 
 - name: Mark scheme
   file:
@@ -84,13 +138,13 @@
     group: sys_admin
     mode: '0644'
 
-- name: Copy file LocalSettings for wiki
-  become: true
-  copy:
-    src: zabbix_server.conf
-    dest: /etc/zabbix/zabbix_server.conf
-    owner: sys_admin
-    group: sys_admin
-    mode: '0644'
-# Осталось nginx и перезапустить сервера 
-# И очень хорошо узнать куда будет смотреть zabbix
+- name: Включить службы
+  service:
+    name: "{{ item }}"
+    enabled: true
+    state: restarted
+  loop:
+    - zabbix-server
+    - zabbix-agent
+    - php8.3-fpm
+    - nginx

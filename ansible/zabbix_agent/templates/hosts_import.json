@@ -1,0 +1,183 @@
+{
+  "zabbix_export": {
+    "version": "6.4",
+    "host_groups": [
+      {
+        "uuid": "3577b4bf-9595-4cf4-a035-c93b2fb96287",
+        "name": "Linux servers"
+      }
+    ],
+    "hosts": [
+      {
+        "host": "wiki_1",
+        "name": "wiki_1",
+        "groups": [
+          {
+            "name": "Linux servers"
+          }
+        ],
+        "templates": [
+          {
+            "name": "Template OS Linux"
+          }
+        ],
+        "interfaces": [
+          {
+            "interface_ref": "28c69668-f964-4c46-b78e-de846994c2e9"
+          }
+        ]
+      },
+      {
+        "host": "wiki_2",
+        "name": "wiki_2",
+        "groups": [
+          {
+            "name": "Linux servers"
+          }
+        ],
+        "templates": [
+          {
+            "name": "Template OS Linux"
+          }
+        ],
+        "interfaces": [
+          {
+            "interface_ref": "12a7773d-d7c3-45c6-8790-e77940a9bad6"
+          }
+        ]
+      },
+      {
+        "host": "bd_primary",
+        "name": "bd_primary",
+        "groups": [
+          {
+            "name": "Linux servers"
+          }
+        ],
+        "templates": [
+          {
+            "name": "Template OS Linux"
+          }
+        ],
+        "interfaces": [
+          {
+            "interface_ref": "82681865-0b82-4523-b9c2-742ccde2d755"
+          }
+        ]
+      },
+      {
+        "host": "bd_standby",
+        "name": "bd_standby",
+        "groups": [
+          {
+            "name": "Linux servers"
+          }
+        ],
+        "templates": [
+          {
+            "name": "Template OS Linux"
+          }
+        ],
+        "interfaces": [
+          {
+            "interface_ref": "482c0b2d-713e-4e6c-b878-87e35bd67c61"
+          }
+        ]
+      },
+      {
+        "host": "backup_console",
+        "name": "backup_console",
+        "groups": [
+          {
+            "name": "Linux servers"
+          }
+        ],
+        "templates": [
+          {
+            "name": "Template OS Linux"
+          }
+        ],
+        "interfaces": [
+          {
+            "interface_ref": "4ad0e530-3987-4690-8388-6d05b57a60fc"
+          }
+        ]
+      },
+      {
+        "host": "load_balancer",
+        "name": "load_balancer",
+        "groups": [
+          {
+            "name": "Linux servers"
+          }
+        ],
+        "templates": [
+          {
+            "name": "Template OS Linux"
+          }
+        ],
+        "interfaces": [
+          {
+            "interface_ref": "fb7fa1d0-7cdc-4347-873e-26af486d5640"
+          }
+        ]
+      }
+    ],
+    "interfaces": [
+      {
+        "interfaceid": "28c69668-f964-4c46-b78e-de846994c2e9",
+        "type": 1,
+        "main": 1,
+        "useip": 1,
+        "ip": "192.168.10.30",
+        "dns": "",
+        "port": "10050"
+      },
+      {
+        "interfaceid": "12a7773d-d7c3-45c6-8790-e77940a9bad6",
+        "type": 1,
+        "main": 1,
+        "useip": 1,
+        "ip": "192.168.10.40",
+        "dns": "",
+        "port": "10050"
+      },
+      {
+        "interfaceid": "82681865-0b82-4523-b9c2-742ccde2d755",
+        "type": 1,
+        "main": 1,
+        "useip": 1,
+        "ip": "192.168.10.10",
+        "dns": "",
+        "port": "10050"
+      },
+      {
+        "interfaceid": "482c0b2d-713e-4e6c-b878-87e35bd67c61",
+        "type": 1,
+        "main": 1,
+        "useip": 1,
+        "ip": "192.168.10.20",
+        "dns": "",
+        "port": "10050"
+      },
+      {
+        "interfaceid": "4ad0e530-3987-4690-8388-6d05b57a60fc",
+        "type": 1,
+        "main": 1,
+        "useip": 1,
+        "ip": "192.168.10.100",
+        "dns": "",
+        "port": "10050"
+      },
+      {
+        "interfaceid": "fb7fa1d0-7cdc-4347-873e-26af486d5640",
+        "type": 1,
+        "main": 1,
+        "useip": 1,
+        "ip": "192.168.10.33",
+        "dns": "",
+        "port": "10050"
+      }
+    ]
+  }
+}
