@@ -3,27 +3,27 @@ linux: #Группа хостов
     postgres_cluster: #Имя подгруппы хостов
       hosts: #Узлы группы
         bd_primary:
-          ansible_host: 158.160.46.70
+          ansible_host: 84.201.156.166
         bd_standby:
-          ansible_host: 158.160.38.229
+          ansible_host: 51.250.65.89
     backup_con:
       hosts:    
         backup_console:
-          ansible_host: 84.201.135.188
+          ansible_host: 84.201.132.13
     media_wiki:
       hosts:    
         wiki_1:
-          ansible_host: 51.250.75.224
+          ansible_host: 62.84.125.16
         wiki_2:
-          ansible_host: 89.169.146.151
+          ansible_host: 51.250.67.127
     load_balancer:
       hosts:
         balancer:
-          ansible_host: 158.160.111.183
+          ansible_host: 84.201.128.245
     zabbix_server:
       hosts:
         zabbix:
-          ansible_host: 158.160.98.42
+          ansible_host: 46.21.247.23
   vars: #Переменные, доступные или используемые для всех подгрупп
     ansible_user: sys_admin
     ansible_ssh_private_key_file: ~/Sys_admin_12/ssh_cloud/id_ed25519

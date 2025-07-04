@@ -66,12 +66,28 @@
     src: mediawiki.nginx.j2
     dest: /etc/nginx/sites-available/mediawiki
 
-- name: Simlinks 
+- name: Copy configurate file nginx for zabbix
+  template:
+    src: zabbix.nginx.j2
+    dest: /etc/nginx/sites-available/zabbix
+
+- name: Simlinks for media_wiki
   file:
     src: /etc/nginx/sites-available/mediawiki
     dest: /etc/nginx/sites-enabled/mediawiki
     state: link
- 
+
+- name: Simlinks for zabbix
+  file:
+    src: /etc/nginx/sites-available/zabbix
+    dest: /etc/nginx/sites-enabled/zabbix
+    state: link
+
+- name: Copy configurate file nginx for zabbix
+  template:
+    src: nginx.conf
+    dest: /etc/nginx/nginx.conf
+
 - name: Delete default site nginx
   file:
     path: /etc/nginx/sites-enabled/default

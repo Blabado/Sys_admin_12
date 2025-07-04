@@ -1,7 +1,0 @@
-host,ip,groups,templates
-wiki_1,192.168.10.30,Linux servers,Template OS Linux
-wiki_2,192.168.10.40,Linux servers,Template OS Linux
-bd_primary,192.168.10.10,Linux servers,Template OS Linux
-bd_standby,192.168.10.20,Linux servers,Template OS Linux
-backup_console,192.168.10.100,Linux servers,Template OS Linux
-load_balancer,192.168.10.33,Linux servers,Template OS Linux

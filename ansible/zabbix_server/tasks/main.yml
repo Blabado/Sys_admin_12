@@ -138,6 +138,15 @@
     group: sys_admin
     mode: '0644'
 
+- name: Copy file zabbix_server.conf.php
+  become: true
+  copy:
+    src: zabbix.conf.php
+    dest: /etc/zabbix/web/zabbix.conf.php
+    owner: www-data
+    group: www-data
+    mode: '0600'
+
 - name: Включить службы
   service:
     name: "{{ item }}"

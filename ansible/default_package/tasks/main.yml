@@ -1,5 +1,5 @@
 ---
-- name: Install dependencies
+- name: Install Depamdens(retry)
   become: true
   apt:
     name:
@@ -10,5 +10,7 @@
       - python3-psycopg2
     state: present
     update_cache: yes
-
-
+  register: apt_result
+  retries: 50
+  delay: 20
+  until: apt_result is succeeded

@@ -1,0 +1,112 @@
+zabbix_export:
+  version: '6.4'
+  host_groups:
+    - uuid: a571c0d144b14fd4a87a9d9b2aa9fcd6
+      name: Applications
+    - uuid: 748ad4d098d447d492bb935c907f652f
+      name: Databases
+    - uuid: dc579cd7a1a34222933f24f52a68bcd8
+      name: 'Linux servers'
+    - uuid: 6f6799aa69e844b4b3918f779f2abf08
+      name: 'Zabbix servers'
+  hosts:
+    - host: backup_console
+      name: backup_console
+      templates:
+        - name: 'Linux by Zabbix agent'
+      groups:
+        - name: 'Linux servers'
+      interfaces:
+        - ip: 192.168.10.100
+          interface_ref: if1
+      inventory_mode: DISABLED
+    - host: balancer
+      name: balancer
+      templates:
+        - name: 'Linux by Zabbix agent'
+        - name: 'Nginx by Zabbix agent'
+      groups:
+        - name: Applications
+      interfaces:
+        - ip: 192.168.10.33
+          interface_ref: if1
+      macros:
+        - macro: '{$NGINX.STUB_STATUS.HOST}'
+          value: 127.0.0.1
+          description: 'The hostname or IP address of the Nginx host or Nginx container of `astub_status`.'
+      inventory_mode: DISABLED
+    - host: bd_primary
+      name: bd_primary
+      templates:
+        - name: 'Linux by Zabbix agent'
+        - name: 'PostgreSQL by Zabbix agent 2'
+      groups:
+        - name: Databases
+      interfaces:
+        - ip: 192.168.10.10
+          interface_ref: if1
+      macros:
+        - macro: '{$PG.PASSWORD}'
+          value: passwd
+          description: 'PostgreSQL user password.'
+      inventory_mode: DISABLED
+    - host: bd_standby
+      name: bd_standby
+      templates:
+        - name: 'Linux by Zabbix agent'
+        - name: 'PostgreSQL by Zabbix agent 2'
+      groups:
+        - name: Databases
+      interfaces:
+        - ip: 192.168.10.20
+          interface_ref: if1
+      macros:
+        - macro: '{$PG.PASSWORD}'
+          value: passwd
+          description: 'PostgreSQL user password.'
+      inventory_mode: DISABLED
+    - host: wiki_1
+      name: wiki_1
+      templates:
+        - name: 'Linux by Zabbix agent'
+        - name: 'Nginx by Zabbix agent'
+      groups:
+        - name: Applications
+      interfaces:
+        - ip: 192.168.10.30
+          interface_ref: if1
+      macros:
+        - macro: '{$NGINX.STUB_STATUS.HOST}'
+          value: 127.0.0.1
+          description: 'The hostname or IP address of the Nginx host or Nginx container of `astub_status`.'
+      inventory_mode: DISABLED
+    - host: wiki_2
+      name: wiki_2
+      templates:
+        - name: 'Linux by Zabbix agent'
+        - name: 'Nginx by Zabbix agent'
+      groups:
+        - name: Applications
+      interfaces:
+        - ip: 192.168.10.40
+          interface_ref: if1
+      macros:
+        - macro: '{$NGINX.STUB_STATUS.HOST}'
+          value: 127.0.0.1
+          description: 'The hostname or IP address of the Nginx host or Nginx container of `astub_status`.'
+      inventory_mode: DISABLED
+    - host: zabbix
+      name: zabbix
+      templates:
+        - name: 'Linux by Zabbix agent'
+        - name: 'Zabbix server health'
+      groups:
+        - name: 'Zabbix servers'
+      interfaces:
+        - interface_ref: if1
+      inventory:
+        name: fhmt2it4vmls787hp8l9
+        os: 'Linux version 6.8.0-38-generic (buildd@lcy02-amd64-049) (x86_64-linux-gnu-gcc-13 (Ubuntu 13.2.0-23ubuntu4) 13.2.0, GNU ld (GNU B'
+        location_lat: '56.95387'
+        location_lon: '24.22067'
+      inventory_mode: AUTOMATIC

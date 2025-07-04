@@ -16,17 +16,38 @@
 - name: Install zabbix_agent
   become: true
   apt:
-    name: zabbix-agent
+    name: 
+      - zabbix-agent2
+      - zabbix-agent2-plugin-postgresql
     state: present
 
 - name: Configuring zabbix-agent
   ansible.builtin.template:
     src: zabbix_agentd.j2
-    dest: /etc/zabbix/zabbix_agentd.conf
+    dest: /etc/zabbix/zabbix_agent2.conf
+
+- name: Create PostgreSQL user wikiuser
+  become: yes
+  become_user: postgres
+  community.postgresql.postgresql_user:
+    name: zbx_monitor
+    password: passwd
+    role_attr_flags: NOSUPERUSER,NOCREATEDB,NOCREATEROLE
+    login_unix_socket: /var/run/postgresql
+    state: present
+  when: "'bd_primary' in inventory_hostname"
+
+- name: Take pg_monitor 
+  shell: |
+    psql -U postgres -d postgres -c "GRANT pg_monitor TO zbx_monitor;"
+  become: true
+  become_user: postgres
+  when: "'bd_primary' in inventory_hostname"
 
 - name: Restarting and enabling zabbix-agent
   ansible.builtin.service:
-    name: zabbix-agent
+    name: zabbix-agent2
     state: restarted
     enabled: yes
+
 

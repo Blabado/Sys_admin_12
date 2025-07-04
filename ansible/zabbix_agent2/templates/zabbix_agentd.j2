@@ -1,0 +1,9 @@
+PidFile=/run/zabbix/zabbix_agent2.pid
+LogFile=/var/log/zabbix/zabbix_agent2.log
+LogFileSize=0
+Server=192.168.10.9
+ServerActive=192.168.10.9
+Hostname={{ inventory_hostname }}
+HostMetadata={{ inventory_hostname }}
+Plugins.PostgreSQL.System.Path=/usr/sbin/zabbix-agent2-plugin/zabbix-agent2-plugin-postgresql
+Include=/etc/zabbix/zabbix_agent2.d/plugins.d/*.conf

@@ -11,7 +11,13 @@
     dest: /etc/nginx/sites-available/nginx_proxy
     owner: root
     group: root
-    mode: '0644'
+
+- name: Install nginx for zabbix
+  copy:
+    src: files/nginx.conf
+    dest: /etc/nginx/nginx.conf
+    owner: root
+    group: root
 
 - name: Simlimks sites-enabled
   file:

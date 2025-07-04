@@ -73,10 +73,18 @@
     - zabbix_server
 
 - name: Запускаем zabbix-agent
-  hosts: all
+  hosts: backup_con:media_wiki:load_balancer:zabbix_server
   become: yes
   roles:
     - role: zabbix_agent
   tags:
     - zabbix_agent
+
+- name: Запускаем zabbix-agent2
+  hosts: postgres_cluster
+  become: yes
+  roles:
+    - role: zabbix_agent2
+  tags:
+    - zabbix_agent2
 
