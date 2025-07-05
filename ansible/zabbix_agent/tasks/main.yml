@@ -30,3 +30,9 @@
     state: restarted
     enabled: yes
 
+- name: Restarting and enabling nginx
+  ansible.builtin.service:
+    name: nginx
+    state: restarted
+    enabled: yes
+

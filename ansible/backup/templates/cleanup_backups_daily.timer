@@ -2,7 +2,7 @@
 Description=Run backup cleanup daily
 
 [Timer]
-OnCalendar=*-*-* 18:30:00
+OnCalendar=*-*-* 05:30:00
 Persistent=true
 
 [Install]

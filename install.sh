@@ -264,7 +264,7 @@ delete_external_ip() {
 take_feedback() {
     balancer=$(awk 'NR==6 {print}' external_ip.txt)
     echo "Open in browser: http://$balancer:80" | tee -a ~/Sys_admin_12/Result.txt
-    zabbix=$(awk 'NR==5 {print}' external_ip.txt)
+    zabbix=$(awk 'NR==7 {print}' external_ip.txt)
     echo "Open in browser for zabbix: http://$zabbix:80" | tee -a ~/Sys_admin_12/Result.txt
     backup=$(awk 'NR==3 {print}' external_ip.txt)
     echo "Crash console $zabbix" | tee -a ~/Sys_admin_12/Result.txt
@@ -361,11 +361,9 @@ if [[ "$@" =~ "--debug" ]]; then
     if debug_skip "delete_external_ip"; then
         delete_external_ip
     fi
-
-
-#    if debug_skip "take_feedback"; then
-#        take_feedback
-#    fi
+    if debug_skip "take_feedback"; then
+       take_feedback
+    fi
     exit
 fi
 
@@ -380,6 +378,6 @@ insert_ip_into_inventory
 wait_for_hosts
 run_ansible_playbooks
 delete_external_ip
-#take_feedback
+take_feedback
 
 

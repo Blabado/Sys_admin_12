@@ -2,8 +2,8 @@
 Description=Run PostgreSQL backup every 5 minutes
 
 [Timer]
-OnBootSec=2min
-OnUnitActiveSec=5min
+OnBootSec=15min
+OnCalendar=*-*-* 03:30:00
 Persistent=true
 
 [Install]
