@@ -262,8 +262,28 @@ delete_external_ip() {
 }
 
 take_feedback() {
-    vm_1=$(awk 'NR==1 {print}' external_ip.txt)
-    echo "Open in browser: http://$vm_1:3000" | tee ~/Sys_admin_12/Result.txt
+    balancer=$(awk 'NR==6 {print}' external_ip.txt)
+    echo "Open in browser: http://$balancer:80" | tee -a ~/Sys_admin_12/Result.txt
+    zabbix=$(awk 'NR==5 {print}' external_ip.txt)
+    echo "Open in browser for zabbix: http://$zabbix:80" | tee -a ~/Sys_admin_12/Result.txt
+    backup=$(awk 'NR==3 {print}' external_ip.txt)
+    echo "Crash console $zabbix" | tee -a ~/Sys_admin_12/Result.txt
+    echo "Доступ через backup_console осуществяется через ssh от пользователя postgres" | tee -a ~/Sys_admin_12/Result.txt
+    echo "Ключ для postgres уже вшит в целевые машины в директрии /var/lib/postgres" | tee -a ~/Sys_admin_12/Result.txt
+    echo "Копия ключа находится в директории ansible/install_ssh/files" | tee -a ~/Sys_admin_12/Result.txt
+    echo "Поключение через внешний ip осуществляется по ключу которых находится в Sys_admin_12/ssh_cloud/id_ed25519 (Очень советую его не терять иначе доступ будет заблокирован)" | tee -a ~/Sys_admin_12/Result.txt
+    echo "(Очень советую его не терять иначе доступ будет заблокирован)" | tee -a ~/Sys_admin_12/Result.txt
+    echo "Доступ к балансировщику и zabbix также осуществляется через внешний ip" | tee -a ~/Sys_admin_12/Result.txt
+    echo "Zabbix и балансировщик не имеет доступ по ssh к основным машиным в целях безопасности" | tee -a ~/Sys_admin_12/Result.txt
+    echo "Пароли и учетные записи для подключения к базам данных можно узнать в плейбуках ansible" | tee -a ~/Sys_admin_12/Result.txt
+    echo "После установки необходимо донастроить zabbix" | tee -a ~/Sys_admin_12/Result.txt
+    echo "Для этого заходим на сервер zabbix входим под админской учеткой (Admin zabbix)" | tee -a ~/Sys_admin_12/Result.txt
+    echo "Открываем data collection -> hosts -> import" | tee -a ~/Sys_admin_12/Result.txt
+    echo "Файл импортирования находится в директории ansible zbx_export_hosts.yaml" | tee -a ~/Sys_admin_12/Result.txt
+    echo "Удаляем старый хост zabbix_server" | tee -a ~/Sys_admin_12/Result.txt
+    echo "Вроде все с богом" | tee -a ~/Sys_admin_12/Result.txt
+
+
 
 }
 

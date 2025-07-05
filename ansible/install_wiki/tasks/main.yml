@@ -1,16 +1,5 @@
 #SPDX-License-Identifier: MIT-0
 ---
-# - name: Установить и настроить nginx + MediaWiki (база на удалённой ПГ)
-#   hosts: mediawiki_server
-#   become: true
-#   vars:
-#     mediawiki_version: "1.39.0"
-#     mediawiki_url: "https://releases.wikimedia.org/mediawiki/{{ mediawiki_version }}/mediawiki-{{ mediawiki_version }}.tar.gz"
-#     mediawiki_root: /var/www/mediawiki
-#     db_host: "{{ hostvars['postgresql_db']['ansible_host'] }}"
-#     db_name: mediawiki
-#     db_user: mediawiki
-#     db_pass: "{{ vault_mediawiki_db_pass }}"
 - name: Install Media Wiki dependens
   become: true
   apt:

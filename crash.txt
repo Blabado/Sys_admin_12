@@ -1,0 +1,53 @@
+Вариант 1: Упал балансировщик
+Доступ к балансировщику осуществляется через консоль Yandex Cloud.
+Переходим в Yandex Cloud → Находим виртуальную машину с ролью балансировщика.
+Получаем внешний IP.
+Подключаемся к балансировщику с хоста по SSH:
+ssh -l sys_admin <EXTERNAL_IP> -i ~/Sys_admin/ssh_cloud/id_ed25519
+Проверяем состояние службы nginx:
+sudo systemctl status nginx
+При необходимости перезапускаем:
+sudo systemctl restart nginx
+Проверяем логи для диагностики:
+---------------------------------------------------------------------
+В случае если упадет один из серверов media_wiki
+Если это произошло доступ осуществляется через авайрийную консоль через пользоватаель postgres по sshключу
+1) Находим машину backup_console берем строчку с внешним ip
+2) C хоста вводим ssh -l sys_admin <EXTERNAL_IP> -i ~/Sys_admin/ssh_cloud/id_ed25519
+3) На backup_console заходим под пользователя postgres (sudo -i -u postgres) 
+4) На backup_console вводим ssh -l postgres <ВНУТРЕНИЙ IP НУЖНОЙ МАШИНЫ>
+5) Переходим под пользователя sys_admin (sudo -i -u sys_admin)
+На аварийной машине смотрим статус работы php-8.3 и nginx
+1) sudo systemctl status nginx
+2) sudo systemctl status php
+3) Если службы выключены смотрим логи (cat /var/log/php cat /var/log/nginx)
+4) Анализируем почему nginx и php выключился 
+5) Устраняем проблему)
+6) Включаем nginx и php (sudo systemcst start *)
+---------------------------------------------------------------------
+В случае если упадет основной(primary) сервер 
+У нас есть 192.168.10.10 он считается primary(node 1)
+У нас есть 192.168.10.20 он считается standby(node 2)
+Если primary падает срабатывает failover и standby автоматически берет на себя роль primary (обычно в течение 3-5 минут)
+Если это произошло доступ осуществляется через авайрийную консоль через пользоватаель postgres по sshключу
+1) Находим машину backup_console берем строчку с внешним ip
+2) C хоста вводим ssh -l sys_admin <EXTERNAL_IP> -i ~/Sys_admin/ssh_cloud/id_ed25519
+3) На backup_console заходим под пользователя postgres (sudo -i -u postgres) 
+4) На backup_console вводим ssh -l postgres <ВНУТРЕНИЙ IP НУЖНОЙ МАШИНЫ> 
+Сначала заходим на серваки 192.168.10.30 (wiki 1) и 192.168.10.40 (wiki 2)
+1) Останавливаем работу nginx (sudo systemctl stop nginx) 
+Нужно ручками зайти на 192.168.10.10(бывшший primary)
+1) НЕ ВКЛЮЧАТЬ СЛУЖБУ POSTGRES ЧТОБЫ ИЗБЕЖАТЬ DUAL-PRIMARY(или как это называется)
+2) подключаемся к пользователю postgres (sudo -i -u postgres)
+3) rm -r /var/lib/postgresql/16/main/ - удаляем местный postgres
+4) repmgr -h 192.168.10.20 -U repmgr -d repmgr -f /etc/repmgr.conf standby clone - делаем клон
+5) sudo systemctl start postgresql.service
+6) repmgr standby register --force - регестрируем его как STANDBY
+7) включить repmgrd 
+9) после того как мы удостоверились что репликация завершена(записи которые делали за время смены primary)
+10) repmgr -f /etc/repmgr.conf standby switchover - меняем роли обратно так как было до чп
+Важно поменять роли обратно так как failover еще раз не сработает если primary будет node 2
+Снова заходим на серваки 192.168.10.30 (wiki 1) и 192.168.10.40 (wiki 2)
+11) Удаляем файл маркер в директории /var/www/html/mediawiki-1.43-1/backup_mode
+12) Запускаем работу nginx (sudo systemctl start nginx) 
+-----------------------------------------------------------------------
